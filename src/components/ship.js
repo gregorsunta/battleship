@@ -14,11 +14,13 @@ const Ship = function (size) {
   };
 };
 
-const ships = {
-  destroyer: new Ship(2),
-  submarine: new Ship(3),
-  cruiser: new Ship(3),
-  battleship: new Ship(4),
-  carrier: new Ship(5),
+const Ships = function () {
+  return {
+    destroyer: new Ship(2),
+    submarine: new Ship(3),
+    cruiser: new Ship(3),
+    battleship: new Ship(4),
+    carrier: new Ship(5),
+  };
 };
-export default ships;
+export default Ships;

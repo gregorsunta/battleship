@@ -5,5 +5,5 @@ This is project to exercise test driven development for the first time.
 This project is using:
 - only **vanilla JavaScript**
 - **Webpack** (with html-webpack-plugin to also generate html files)
-- **Jest
+- **Jest**
 - **babel** for jest compatibility

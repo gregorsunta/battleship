@@ -3,8 +3,8 @@
 ## About
 This is the first time I am using test driven development in a project. This project is being built following The Odin Project.
 
-Link to the specific project: link(https://www.theodinproject.com/lessons/node-path-javascript-battleship)
-Link to the The Odin Project: link(https://www.theodinproject.com/dashboard)
+Link to the specific project: [link](https://www.theodinproject.com/lessons/node-path-javascript-battleship)
+Link to the The Odin Project: [link](https://www.theodinproject.com/dashboard)
 
 ## Setup
 This project is using:

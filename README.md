@@ -1,5 +1,5 @@
 # battleship
-This is project to exercise test driven development for the first time.
+This is my first project in which I am using test driven development.
 
 ## Setup
 This project is using:

@@ -1,4 +1,6 @@
-# battleship
+# Battleship
+
+##About
 This is my first project in which I am using test driven development.
 
 ## Setup

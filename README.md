@@ -1,6 +1,6 @@
 # battleship
 
-##Setup
+## Setup
 This project is using:
 - vanilla javascript
 - webpack (with html-webpack-plugin to also generate html files)

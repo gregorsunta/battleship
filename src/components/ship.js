@@ -1,6 +1,8 @@
 const Ship = function (size) {
   return {
     size: size,
+    start: undefined,
+    orient: 'v',
     hits: 0,
     hit() {
       this.hits++;
@@ -12,4 +14,11 @@ const Ship = function (size) {
   };
 };
 
-export default Ship;
+const ships = {
+  destroyer: new Ship(2),
+  submarine: new Ship(3),
+  cruiser: new Ship(3),
+  battleship: new Ship(4),
+  carrier: new Ship(5),
+};
+export default ships;

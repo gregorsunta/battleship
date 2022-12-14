@@ -10,6 +10,7 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     clean: true,
   },
+
   plugins: [
     new HtmlWebpackPlugin({
       title: 'Battleship',
@@ -18,6 +19,11 @@ module.exports = {
   ],
   module: {
     rules: [
+      {
+        test: /\.jsx?$/,
+        exclude: [__dirname + '/node_modules'],
+        use: ['babel-loader'],
+      },
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],

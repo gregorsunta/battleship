@@ -37,3 +37,24 @@ test("check if the carrier is not placed when a square's out of bounds", () => {
   expect(Gameboard1.squares[`6,1`]).toBeNull();
   expect(Gameboard1.squares[`9,1`]).toBeNull();
 });
+test('check if the gameboard correctly receives an attack', () => {
+  const Gameboard1 = new Gameboard();
+  Gameboard1.createBoard();
+  const newShips = new Ships();
+  Gameboard1.placeShip(`1,1`, newShips.destroyer);
+
+  expect(Gameboard1.receiveAttack(`1,1`)).toStrictEqual(1);
+  expect(Gameboard1.receiveAttack(`5,5`)).toStrictEqual('hit');
+  expect(newShips.destroyer.hits).toStrictEqual(1);
+});
+test('check if the gameboard correctly calculates if all ships sunk', () => {
+  const Gameboard1 = new Gameboard();
+  Gameboard1.createBoard();
+  const newShips = new Ships();
+  Gameboard1.placeShip(`1,1`, newShips.destroyer);
+
+  expect(Gameboard1.receiveAttack(`1,1`)).toStrictEqual(1);
+  expect(Gameboard1.areShipsSunk()).toStrictEqual(false);
+  expect(Gameboard1.receiveAttack(`1,2`)).toStrictEqual(2);
+  expect(Gameboard1.areShipsSunk()).toStrictEqual(true);
+});

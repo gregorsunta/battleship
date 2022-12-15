@@ -5,7 +5,7 @@ const Ship = function (size) {
     orient: 'v',
     hits: 0,
     hit() {
-      this.hits++;
+      return ++this.hits;
     },
     isSunk() {
       if (this.size === this.hits) return true;

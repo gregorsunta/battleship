@@ -18,7 +18,7 @@ const Gameboard = function (size = 10) {
         if (shipOrient === 'v') {
           for (let i = 0; i < ship.size; i++) {
             const neighbourStr = [start[0], start[1] + i].join();
-            if (squares[neighbourStr]) {
+            if (squares[neighbourStr] === undefined) {
               return false;
             }
           }
@@ -27,28 +27,33 @@ const Gameboard = function (size = 10) {
         if (shipOrient === 'h') {
           for (let i = 0; i < ship.size; i++) {
             const neighbourStr = [start[0] + i, start[1]].join();
-            if (squares[neighbourStr]) {
+            if (squares[neighbourStr] === undefined) {
               return false;
             }
           }
           return true;
         }
       };
+      const placeShipVertically = function () {
+        for (let i = 0; i < shipSize; i++) {
+          const neighbour = [squareId[0], squareId[1] + i];
+          const neighbourStr = neighbour.join();
+          squares[neighbourStr] = ship;
+        }
+      };
+      const placeShipHorizontally = function () {
+        for (let i = 0; i < shipSize; i++) {
+          const neighbour = [squareId[0] + i, squareId[1]];
 
+          const neighbourStr = neighbour.join();
+          squares[neighbourStr] = ship;
+        }
+      };
       if (isPlacementValid(squareId, ship)) {
         if (shipOrient === 'v') {
-          for (let i = 0; i < shipSize; i++) {
-            const neighbour = [squareId[0], squareId[1] + i];
-            const neighbourStr = neighbour.join();
-            squares[neighbourStr] = ship;
-          }
+          placeShipVertically(squareId, shipSize, squares);
         } else if (shipOrient === 'h') {
-          for (let i = 0; i < shipSize; i++) {
-            const neighbour = [squareId[0] + i, squareId[1]];
-
-            const neighbourStr = neighbour.join();
-            squares[neighbourStr] = ship;
-          }
+          placeShipHorizontally(squareId, shipSize, squares);
         }
       }
     },

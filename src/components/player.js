@@ -10,23 +10,26 @@ const Player = function (isComputer = false) {
       this.Gameboard.createBoard(size);
       return this.Gameboard;
     },
-    createRandomMove(gameBoardSize) {
-      const randomNumber = () => {
-        return Math.floor(Math.random() * (gameBoardSize - 0) + 0);
-      };
-      return [randomNumber(), randomNumber()];
-    },
     attack(enemy, move) {
-      if (isComputer) {
-        const occupies = enemy.Gameboard.receiveAttack(randomMove);
-        while (enemy.Gameboard.squares[move].isHit) {
-          const randomMove = createRandomMove(this.Gameboard.size);
-          occupies = enemy.Gameboard.receiveAttack(randomMove);
+      return enemy.Gameboard.receiveAttack(move);
+    },
+    computerAttack(enemy) {
+      const gameboardSize = this.Gameboard.size;
+      const randomNumber = (gameboardSize) => {
+        return Math.floor(Math.random() * gameboardSize);
+      };
+      const randomSquare = () => {
+        const square = `${randomNumber(gameboardSize)},${randomNumber(
+          gameboardSize,
+        )}`;
+        this.Gameboard.squares[square];
+        if (this.Gameboard.squares[square]?.isHit === false) {
+          return square;
+        } else {
+          return randomSquare();
         }
-        return;
-      } else {
-        return enemy.Gameboard.receiveAttack(move);
-      }
+      };
+      return enemy.Gameboard.receiveAttack(randomSquare());
     },
   };
 };

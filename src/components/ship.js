@@ -13,7 +13,6 @@ const Ship = function (size) {
     },
   };
 };
-
 const Ships = function () {
   return {
     destroyer: new Ship(2),

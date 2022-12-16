@@ -1,26 +1,32 @@
-const Gameboard = function (size = 10) {
+import Ships from './ship.js';
+
+const Gameboard = function () {
   return {
     squares: {},
-    ships: [],
-    createBoard() {
+    ships: new Ships(),
+    createBoard(size = 10) {
       for (let i = 0; i < size; i++) {
         for (let j = 0; j < size; j++) {
-          this.squares[`${[i, j]}`] = null;
+          this.squares[`${[i, j]}`] = {
+            isHit: false,
+            occupies: null,
+          };
         }
       }
+      return this.squares;
     },
-    placeShip(squareStr, ship) {
-      const shipsArr = this.ships;
+    placeShip(shipName, squareStr, newOrient = 'v') {
+      const ship = this.ships[shipName];
       const squares = this.squares;
       const squareId = squareStr.split(',').map((el) => Number(el));
       const shipSize = ship.size;
-      const shipOrient = ship.orient;
+      const shipOrient = (ship.orient = newOrient);
 
       const isPlacementValid = function (start, ship) {
         if (shipOrient === 'v') {
           for (let i = 0; i < ship.size; i++) {
             const neighbourStr = [start[0], start[1] + i].join();
-            if (squares[neighbourStr] === undefined) {
+            if (!squares[neighbourStr]) {
               return false;
             }
           }
@@ -37,19 +43,17 @@ const Gameboard = function (size = 10) {
         }
       };
       const placeShipVertically = function () {
-        shipsArr.push(ship);
         for (let i = 0; i < shipSize; i++) {
           const neighbour = [squareId[0], squareId[1] + i];
           const neighbourStr = neighbour.join();
-          squares[neighbourStr] = ship;
+          squares[neighbourStr].occupies = ship;
         }
       };
       const placeShipHorizontally = function () {
-        shipsArr.push(ship);
         for (let i = 0; i < shipSize; i++) {
           const neighbour = [squareId[0] + i, squareId[1]];
           const neighbourStr = neighbour.join();
-          squares[neighbourStr] = ship;
+          squares[neighbourStr].occupies = ship;
         }
       };
       if (isPlacementValid(squareId, ship)) {
@@ -61,19 +65,28 @@ const Gameboard = function (size = 10) {
       }
     },
     areShipsSunk() {
-      return this.ships.every((ship) => ship.isSunk());
+      for (let key of Object.keys(this.ships)) {
+        if (!this.ships[key].isSunk()) {
+          return false;
+        }
+        return true;
+      }
     },
     receiveAttack(squareStr) {
       const squareIdStr = squareStr;
+      const square = this.squares[squareIdStr];
 
-      if (this.squares[squareIdStr] === undefined) {
-        return `This attack is out of bounds`;
-      } else if (this.squares[squareIdStr] === null) {
-        return (this.squares[squareIdStr] = 'hit');
-      } else if (this.squares[squareIdStr]) {
-        return this.squares[squareIdStr].hit();
+      if (!square) {
+        return `Out of bounds`;
+      } else if (square.isHit) {
+        return `Already hit`;
+      } else {
+        square.isHit = true;
+        if (square.occupies) {
+          square.occupies.hit();
+        }
+        return square.occupies;
       }
-      return Error`Conditions not met`;
     },
   };
 };

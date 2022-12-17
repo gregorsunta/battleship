@@ -6,6 +6,7 @@ export default {
   entry: './src/index.js',
   mode: 'development',
   devtool: 'inline-source-map',
+  watch: true,
   output: {
     filename: '[name].bundle.js',
     path: path.join(__dirname, 'dist'),

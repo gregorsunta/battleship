@@ -27,7 +27,7 @@ const Gameboard = function () {
         if (shipOrient === 'v') {
           for (let i = 0; i < ship.size; i++) {
             const neighbourStr = [start[0], start[1] + i].join();
-            if (!squares[neighbourStr]) {
+            if (squares[neighbourStr]?.occupies) {
               return false;
             }
           }
@@ -36,7 +36,9 @@ const Gameboard = function () {
         if (shipOrient === 'h') {
           for (let i = 0; i < ship.size; i++) {
             const neighbourStr = [start[0] + i, start[1]].join();
-            if (squares[neighbourStr] === undefined) {
+            if (!squares[neighbourStr]) {
+              return false;
+            } else if (squares[neighbourStr]?.occupies) {
               return false;
             }
           }

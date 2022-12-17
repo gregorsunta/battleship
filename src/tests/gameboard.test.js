@@ -41,6 +41,33 @@ test("check if the carrier is not placed when a square's out of bounds", () => {
   expect(Gameboard1.squares[`6,1`].occupies).toBeNull();
   expect(Gameboard1.squares[`9,1`].occupies).toBeNull();
 });
+test("check if the carrier is not placed when a square's occupied", () => {
+  const Gameboard1 = new Gameboard();
+  Gameboard1.createBoard();
+  Gameboard1.placeShip('carrier', `5,0`, 'v');
+  Gameboard1.placeShip('carrier', `4,1`, 'h');
+
+  expect([
+    Gameboard1.squares[`5,0`].occupies,
+    Gameboard1.squares[`5,1`].occupies,
+    Gameboard1.squares[`5,2`].occupies,
+    Gameboard1.squares[`5,3`].occupies,
+    Gameboard1.squares[`5,4`].occupies,
+  ]).toStrictEqual([
+    Gameboard1.ships['carrier'],
+    Gameboard1.ships['carrier'],
+    Gameboard1.ships['carrier'],
+    Gameboard1.ships['carrier'],
+    Gameboard1.ships['carrier'],
+  ]);
+  expect([
+    Gameboard1.squares[`4,1`].occupies,
+    Gameboard1.squares[`5,1`].occupies,
+    Gameboard1.squares[`6,1`].occupies,
+    Gameboard1.squares[`7,1`].occupies,
+    Gameboard1.squares[`8,1`].occupies,
+  ]).toStrictEqual([null, Gameboard1.ships['carrier'], null, null, null]);
+});
 test('check if the gameboard correctly receives an attack', () => {
   const Gameboard1 = new Gameboard();
   Gameboard1.createBoard();

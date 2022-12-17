@@ -1,7 +1,7 @@
 const Ship = function (size) {
   return {
     size: size,
-    start: undefined,
+    // start: undefined,
     orient: 'v',
     hits: 0,
     hit() {

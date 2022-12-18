@@ -18,4 +18,4 @@ This project is using:
 
 ## Components
 
-All of the components have their respective test file containing multiple tests.
+All of the components have their respective test files containing multiple tests.

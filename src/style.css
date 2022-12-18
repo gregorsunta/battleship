@@ -1,1 +1,116 @@
-/* do something */
+@import url('./reset-styles.css');
+@import url('./fonts.css');
+
+:root {
+  box-sizing: border-box;
+
+  /* font */
+  font-family: 'Ubuntu';
+  font-weight: 500;
+  color: var(--main-color);
+  --large-font-size: 1.4rem;
+  --font-size: 1rem;
+  --small-font-size: 0.8rem;
+
+  /* colors */
+
+  --main-color: #2c3a47;
+  --secondary-color: #e1f9f4;
+  --highlight-color: #05c46b;
+  --fade-highlight-color: #3e4c45;
+  --gray-color: #485460;
+  --ten-gray-color: #e6e6e6;
+  --fifty-gray-color: #808080;
+  --white-color: #ffffff;
+  --fade-color: #cccccc;
+  --extra-fade-color: #f1f1f1;
+  --green-color: #badc58;
+  --yellow-color: #f9ca24;
+  --orange-color: #f0932b;
+  --red-color: #eb4d4b;
+
+  --green-color-filter: invert(70%) sepia(66%) saturate(4380%)
+    hue-rotate(111deg) brightness(93%) contrast(101%);
+  --red-color-filter: invert(51%) sepia(84%) saturate(2437%) hue-rotate(328deg)
+    brightness(92%) contrast(100%);
+  --orange-color-filter: invert(84%) sepia(36%) saturate(6215%)
+    hue-rotate(341deg) brightness(98%) contrast(91%);
+  --yellow-color-filter: invert(87%) sepia(94%) saturate(3945%)
+    hue-rotate(333deg) brightness(100%) contrast(95%);
+
+  /* buttons */
+  --icon-size: 1.2rem;
+  --small-icon-size: 1rem;
+  --smaller-icon-size: 0.8rem;
+  --white-filter: invert(100%) sepia(94%) saturate(0%) hue-rotate(248deg)
+    brightness(106%) contrast(106%);
+
+  /* layout */
+  --extra-small-size: 0.8rem;
+  --smaller-size: 1rem;
+  --small-size: 2rem;
+  --regular-size: 3rem;
+  --large-size: 4rem;
+
+  --common-border-radius: 2rem;
+  --small-border-radius: 0.5rem;
+  --smaller-border-radius: 0.25rem;
+  --large-padding: 4rem;
+  --common-padding: 2rem;
+  --small-padding: 2rem;
+  --smaller-padding: 0.5rem;
+  --extra-small-padding: 0.25rem;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+  background-color: var(--secondary-color);
+}
+/* HEADER */
+header {
+  /* background-color: var(--secondary-color); */
+  height: min-content;
+  padding: var(--small-padding);
+}
+logo {
+  display: inline-block;
+
+  font-weight: 500;
+  letter-spacing: -1px;
+  font-size: var(--large-font-size);
+}
+/* MAIN CONTENT */
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+}
+.name.input.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--smaller-padding);
+}
+.name.input.container > section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--extra-small-size);
+}
+
+/* FOOTER */
+footer {
+  /* background-color: var(--secondary-color); */
+  padding: var(--smaller-padding);
+  display: flex;
+  justify-content: center;
+}
+
+/* COMMON */
+
+input {
+  border-radius: var(--small-border-radius);
+  border: none;
+  padding: var(--smaller-padding);
+}

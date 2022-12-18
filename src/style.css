@@ -16,7 +16,7 @@
 
   --main-color: #2c3a47;
   --secondary-color: #e1f9f4;
-  --highlight-color: #05c46b;
+  --highlight-color: #58b19f;
   --fade-highlight-color: #3e4c45;
   --gray-color: #485460;
   --ten-gray-color: #e6e6e6;
@@ -49,7 +49,7 @@
   --extra-small-size: 0.8rem;
   --smaller-size: 1rem;
   --small-size: 2rem;
-  --regular-size: 3rem;
+  --common-size: 3rem;
   --large-size: 4rem;
 
   --common-border-radius: 2rem;
@@ -65,14 +65,14 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-
-  background-color: var(--secondary-color);
+  background-color: var(--white-color);
 }
 /* HEADER */
 header {
   /* background-color: var(--secondary-color); */
   height: min-content;
   padding: var(--small-padding);
+  background-color: var(--secondary-color);
 }
 logo {
   display: inline-block;
@@ -88,13 +88,18 @@ main {
   align-items: center;
   flex: 1;
 }
-.name.input.container {
+form {
   display: flex;
   flex-direction: column;
-  gap: var(--smaller-padding);
+  gap: var(--small-padding);
+  padding: var(--large-padding);
+  /* border-radius: var(--small-border-radius); */
+  box-shadow: 0px 0px 10px var(--fade-color);
+  background-color: var(--white-color);
 }
-.name.input.container > section {
+form > section {
   display: flex;
+  align-items: center;
   flex-direction: column;
   gap: var(--extra-small-size);
 }
@@ -105,12 +110,13 @@ footer {
   padding: var(--smaller-padding);
   display: flex;
   justify-content: center;
+  background-color: var(--secondary-color);
 }
 
 /* COMMON */
 
 input {
   border-radius: var(--small-border-radius);
-  border: none;
+  border: 1px solid var(--fade-color);
   padding: var(--smaller-padding);
 }

@@ -1,8 +1,9 @@
-import Gameboard from './gameboard';
-import Ships from './ship';
+import Gameboard from './gameboard.js';
+import Ships from './ship.js';
 
-const Player = function (isComputer = false) {
+const Player = function (name, isComputer = false) {
   return {
+    name: name,
     isComputer: isComputer,
     previousHit: false,
     attachGameboard(size) {

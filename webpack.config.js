@@ -17,6 +17,7 @@ export default {
     new HtmlWebpackPlugin({
       title: 'Battleship',
       template: './src/index.html',
+      filename: 'index.bundle.html',
     }),
   ],
   module: {

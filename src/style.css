@@ -120,3 +120,7 @@ input {
   border: 1px solid var(--fade-color);
   padding: var(--smaller-padding);
 }
+
+.fade {
+  opacity: 0.3;
+}

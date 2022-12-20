@@ -9,7 +9,7 @@ const form = (function () {
     button: container.querySelector('button'),
     options: {
       optionComputer: {
-        input: container.querySelector('.option.computer'),
+        input: container.querySelector('.option.computer > input'),
       },
       optionSize: {
         input: container.querySelector('.option.size > input'),
@@ -18,12 +18,12 @@ const form = (function () {
     },
     players: {
       playerOne: {
-        container: container.querySelector('.one'),
+        container: container.querySelector('.name.input.one'),
         input: container.querySelector('.one > input'),
         error: container.querySelector('.one > .error'),
       },
       playerTwo: {
-        container: container.querySelector('.two'),
+        container: container.querySelector('.name.input.two'),
         input: container.querySelector('.two > input'),
         error: container.querySelector('.two > .error'),
       },

@@ -124,3 +124,6 @@ input {
 .fade {
   opacity: 0.3;
 }
+.hide {
+  display: none;
+}

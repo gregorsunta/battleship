@@ -1,3 +1,5 @@
+'use strict';
+
 import Ships from './ship.js';
 
 const Gameboard = function () {

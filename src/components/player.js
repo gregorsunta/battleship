@@ -1,3 +1,5 @@
+'use strict';
+
 import Gameboard from './gameboard.js';
 import Ships from './ship.js';
 

@@ -1,3 +1,5 @@
+'use strict';
+
 const Ship = function (size) {
   return {
     size: size,

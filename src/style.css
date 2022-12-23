@@ -127,3 +127,19 @@ input {
 .hide {
   display: none;
 }
+.container.game {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--common-size);
+}
+.container.gameboard {
+  width: 500px;
+  height: 500px;
+}
+.container.gameboard > div {
+  display: grid;
+}
+.container.gameboard .square {
+  border: 0.5px dashed rgb(117, 117, 117);
+}

@@ -3,20 +3,7 @@
 import { form, game } from '/src/components/dom.js';
 import Player from '/src/components/player.js';
 
-// show popup *if checkbox => cover player 2
-// getNames on pressing start
-// show gameboards
-// player one choose ship positions
-// HIDE player one gameboard
-// player two choose ship positions
-// HIDE player two gameboard
-// player one's turn to select the enemies gameboard *disable player one's gameboard
-// player two's turn to select the enemies gameboard *disable player two's gameboard
-// ***CHECK FOR WIN EVERY TURN
 const Gameloop = (function () {
-  const hideElement = function (container) {
-    container.classList.add('hide');
-  };
   const processForm = (function () {
     const options = form.options;
     const players = form.players;
@@ -42,6 +29,7 @@ const Gameloop = (function () {
       const secondName = players.playerTwo.input.value;
       const computerOption = options.optionComputer.input.checked;
       const gameboardSize = options.optionSize.input.value;
+
       return { firstName, secondName, computerOption, gameboardSize };
     };
     const displayError = function (player) {
@@ -65,6 +53,7 @@ const Gameloop = (function () {
         players.playerTwo.input.validity.valid
       ) {
         initiateGame(getFormInput(players, options));
+        form.container.reset();
       } else {
         for (let player in players) {
           displayError(players[player]);
@@ -74,6 +63,9 @@ const Gameloop = (function () {
   })();
   const initiateGame = function (obj) {
     hideElement(form.container);
+    const leftContainer = game.leftContainer;
+    const rightContainer = game.rightContainer;
+    const shipContainer = game.shipContainer;
     const players = {
       playerOne: new Player(obj.firstName),
       playerTwo: () => {
@@ -86,11 +78,35 @@ const Gameloop = (function () {
     };
     const gameboards = {
       gameboardOne: players.playerOne.attachGameboard(obj.gameboardSize),
-      gameboardTwo: players.playerTwo.attachGameboard(obj.gameboardSize),
+      gameboardTwo: players.playerTwo().attachGameboard(obj.gameboardSize),
     };
-    for (let gameboard in gameboards) {
-      for (let square in gameboard.squares) {
+    const createGameboardEl = function (gameboard) {
+      const gridContainer = document.createElement('div');
+      gridContainer.style.gridTemplateRows = `repeat(${obj.gameboardSize}, 1fr)`;
+      gridContainer.style.gridTemplateColumns = `repeat(${obj.gameboardSize}, 1fr)`;
+      // gridContainer.style.gridAutoRows = `1fr`;
+      // gridContainer.style.gridAutoColumns = `1fr`;
+      for (let key of Object.keys(gameboard.squares)) {
+        const squareEl = document.createElement('div');
+        squareEl.classList.add('square');
+        squareEl.dataset.id = [`${key}`];
+        gridContainer.append(squareEl);
+        gridContainer.style.height = `100%`;
+        gridContainer.style.width = `100%`;
       }
-    }
+
+      return gridContainer;
+    };
+    leftContainer.append(createGameboardEl(gameboards.gameboardOne));
+    rightContainer.append(createGameboardEl(gameboards.gameboardTwo));
+    showElement(leftContainer);
+    showElement(rightContainer);
+  };
+  // UTILITY FUNCTIONS
+  const hideElement = function (container) {
+    container.classList.add('hide');
+  };
+  const showElement = function (container) {
+    container.classList.remove('hide');
   };
 })();

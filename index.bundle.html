@@ -14,17 +14,19 @@
     <main>
       <div class="content container">
         <form class="name input container" id="start-form">
-          <section>
+          <section class="option computer">
             <p>Playing against the computer?</p>
             <input type="checkbox" class="option computer" autocomplete="off" />
           </section>
           <section class="name input one">
             <label>Player one:</label>
             <input type="text" required />
+            <p class="error hide"></p>
           </section>
           <section class="name input two">
             <label>Player two:</label>
             <input type="text" required />
+            <p class="error hide"></p>
           </section>
           <p>Gameboard size</p>
           <section class="option size">
@@ -44,8 +46,9 @@
         </form>
         <game>
           <div class="container game">
-            <div class="left container gameboard"></div>
-            <div class="right container gameboard"></div>
+            <div class="left container gameboard hide"></div>
+            <div class="right container gameboard hide"></div>
+            <div class="ship container"></div>
           </div>
         </game>
       </div>

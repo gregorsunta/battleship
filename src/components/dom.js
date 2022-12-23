@@ -35,5 +35,21 @@ const game = (function () {
   return {
     leftContainer: container.querySelector('.left.container'),
     rightContainer: container.querySelector('.right.container'),
+    leftShipContainer: {
+      container: container.querySelector('.container.ship'),
+      destroyer: 'destroyer',
+      submarine: 'submarine',
+      cruiser: 'cruiser',
+      battleship: 'battleship',
+      carrier: 'carrier',
+    },
+    rightShipContainer: {
+      container: container.querySelector('.container.ship'),
+      destroyer: 'destroyer',
+      submarine: 'submarine',
+      cruiser: 'cruiser',
+      battleship: 'battleship',
+      carrier: 'carrier',
+    },
   };
 })();

@@ -63,9 +63,10 @@ const Gameloop = (function () {
   })();
   const initiateGame = function (obj) {
     hideElement(form.container);
-    const leftContainer = game.leftContainer;
-    const rightContainer = game.rightContainer;
-    const shipContainer = game.shipContainer;
+    const leftContainer = game.leftPlayer.gameboard.container;
+    const rightContainer = game.rightPlayer.gameboard.container;
+    const leftShipContainer = game.leftPlayer.ships.container;
+    const rightShipContainer = game.rightPlayer.ships.container;
     const players = {
       playerOne: new Player(obj.firstName),
       playerTwo: () => {
@@ -101,6 +102,8 @@ const Gameloop = (function () {
     rightContainer.append(createGameboardEl(gameboards.gameboardTwo));
     showElement(leftContainer);
     showElement(rightContainer);
+    showElement(leftShipContainer);
+    showElement(rightShipContainer);
   };
   // UTILITY FUNCTIONS
   const hideElement = function (container) {

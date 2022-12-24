@@ -34,7 +34,8 @@ const game = (function () {
   const container = document.querySelector('.game.container');
   return {
     leftPlayer: {
-      gameboard: { container: container.querySelector('.left.container') },
+      container: container.querySelector('.left.player'),
+      gameboard: { container: container.querySelector('.left.gameboard') },
       ships: {
         container: container.querySelector('.container.ships.left'),
         destroyer: 'destroyer',
@@ -45,7 +46,8 @@ const game = (function () {
       },
     },
     rightPlayer: {
-      gameboard: { container: container.querySelector('.right.container') },
+      container: container.querySelector('.right.player'),
+      gameboard: { container: container.querySelector('.right.gameboard') },
       ships: {
         container: container.querySelector('.container.ships.right'),
         destroyer: 'destroyer',

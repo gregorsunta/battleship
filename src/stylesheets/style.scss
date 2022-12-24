@@ -87,6 +87,9 @@ form {
   justify-content: center;
   align-items: center;
   gap: $common-size;
+  .player {
+    display: flex;
+  }
   .container.gameboard {
     width: 30vw;
     aspect-ratio: 1/1;

@@ -85,8 +85,6 @@ const Gameloop = (function () {
       const gridContainer = document.createElement('div');
       gridContainer.style.gridTemplateRows = `repeat(${obj.gameboardSize}, 1fr)`;
       gridContainer.style.gridTemplateColumns = `repeat(${obj.gameboardSize}, 1fr)`;
-      // gridContainer.style.gridAutoRows = `1fr`;
-      // gridContainer.style.gridAutoColumns = `1fr`;
       for (let key of Object.keys(gameboard.squares)) {
         const squareEl = document.createElement('div');
         squareEl.classList.add('square');
@@ -100,10 +98,10 @@ const Gameloop = (function () {
     };
     leftContainer.append(createGameboardEl(gameboards.gameboardOne));
     rightContainer.append(createGameboardEl(gameboards.gameboardTwo));
-    showElement(leftContainer);
-    showElement(rightContainer);
     showElement(leftShipContainer);
     showElement(rightShipContainer);
+    showElement(leftContainer);
+    showElement(rightContainer);
   };
   // UTILITY FUNCTIONS
   const hideElement = function (container) {

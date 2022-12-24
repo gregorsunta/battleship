@@ -15,6 +15,7 @@ This project is using:
 - **Webpack** with html-webpack-plugin to also generate html files
 - **Jest**
 - **babel** for jest compatibility
+- **S**yntatically **a**wesome **s**tyle **s**heets
 
 ## Components
 

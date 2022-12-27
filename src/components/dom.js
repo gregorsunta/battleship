@@ -33,6 +33,7 @@ const form = (function () {
 const game = (function () {
   const container = document.querySelector('.game.container');
   return {
+    container,
     leftPlayer: {
       container: container.querySelector('.left.player'),
       gameboard: { container: container.querySelector('.left.gameboard') },

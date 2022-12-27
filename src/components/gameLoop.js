@@ -63,6 +63,8 @@ const Gameloop = (function () {
   })();
   const initiateGame = function (obj) {
     hideElement(form.container);
+
+    const gameContainer = game.container;
     const leftContainer = game.leftPlayer.gameboard.container;
     const rightContainer = game.rightPlayer.gameboard.container;
     const leftShipContainer = game.leftPlayer.ships.container;
@@ -96,12 +98,12 @@ const Gameloop = (function () {
 
       return gridContainer;
     };
+
     leftContainer.append(createGameboardEl(gameboards.gameboardOne));
     rightContainer.append(createGameboardEl(gameboards.gameboardTwo));
-    showElement(leftShipContainer);
-    showElement(rightShipContainer);
-    showElement(leftContainer);
-    showElement(rightContainer);
+    showElement(gameContainer);
+    const square = document.querySelector(`[data-id="0,0"]`);
+    leftShipContainer.setProperty('base-size-prop', `${square.offsetHeight}px`);
   };
   // UTILITY FUNCTIONS
   const hideElement = function (container) {

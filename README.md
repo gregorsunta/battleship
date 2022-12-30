@@ -25,11 +25,18 @@ HTML                       |  DOM.JS
 :-------------------------:|:-------------------------:
  ![image](https://user-images.githubusercontent.com/102059719/210060868-1ea3e91b-cd7c-4167-b13f-c0d1dcc12cb9.png)|![image](https://user-images.githubusercontent.com/102059719/210060724-1552bf60-e1fb-470b-937d-b6f56d8e8be2.png)
 
-This file is completely dedicated to DOM element referencing as shown in the example above.
+This file is completely dedicated to referencing DOM elements as shown in the example above.
+
 ### `ship.js`
-This file contains two factory functions:
-- `Ship` creates a ship with specified length
-- `Ships` creates a ship collection 
+contains two factory functions:
+- `Ship` creates a ship object with specified length
+- `Ships` creates a ship collection object
+
+### `Gameboard.js`
+creates a gameboard object with its own ship collection.
+
+### `Player.js`
+
 
 ## Challenges
 ### Structuring code

@@ -102,8 +102,13 @@ const Gameloop = (function () {
     leftContainer.append(createGameboardEl(gameboards.gameboardOne));
     rightContainer.append(createGameboardEl(gameboards.gameboardTwo));
     showElement(gameContainer);
-    const square = document.querySelector(`[data-id="0,0"]`);
-    leftShipContainer.setProperty('base-size-prop', `${square.offsetHeight}px`);
+    const squareHeight = document.querySelector(`[data-id="0,0"]`).offsetHeight;
+
+    // set ship size
+    document.documentElement.style.setProperty(
+      '--base-size',
+      `${squareHeight}px`,
+    );
   };
   // UTILITY FUNCTIONS
   const hideElement = function (container) {

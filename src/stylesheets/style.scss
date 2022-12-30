@@ -1,6 +1,10 @@
 @use './fonts.css';
 @use './reset-styles.css';
 
+:root {
+  --base-size: 1rem;
+}
+
 /* colors */
 $main-color: #2c3a47;
 $secondary-color: #e1f9f4;
@@ -101,8 +105,7 @@ form {
     }
   }
   .container.ships {
-    --base-size-prop: 1rem;
-    // $base-svar(--base-size-prop)
+    $base-size: var(--base-size);
     $color: #e6e6e6;
     $border-color: #6b6b6b;
     $border-radius: 50%;
@@ -120,24 +123,24 @@ form {
       border-radius: $border-radius;
     }
     .destroyer {
-      height: (var(--base-size-prop) * 0.7);
-      width: calc(var(--base-size-prop) * 2);
+      height: calc($base-size * 0.7);
+      width: calc($base-size * 2);
     }
     .submarine {
-      height: (var(--base-size-prop) * 0.7);
-      width: calc(var(--base-size-prop) * 3);
+      height: calc($base-size * 0.7);
+      width: calc($base-size * 3);
     }
     .cruiser {
-      height: (var(--base-size-prop) * 0.7);
-      width: calc(var(--base-size-prop) * 3);
+      height: calc($base-size * 0.7);
+      width: calc($base-size * 3);
     }
     .battleship {
-      height: (var(--base-size-prop) * 0.9);
-      width: calc(var(--base-size-prop) * 4);
+      height: calc($base-size * 0.9);
+      width: calc($base-size * 4);
     }
     .carrier {
-      height: (var(--base-size-prop) * 1);
-      width: calc(var(--base-size-prop) * 5);
+      height: calc($base-size * 1);
+      width: calc($base-size * 5);
     }
   }
 }

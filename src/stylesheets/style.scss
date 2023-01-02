@@ -2,17 +2,20 @@
 @use './reset-styles.css';
 
 :root {
-  --base-size: 1rem;
+  --base-unit-size: 15px;
 }
 
 /* colors */
+$highlight: #ffcccc;
+
 $main-color: #2c3a47;
 $secondary-color: #e1f9f4;
-$highlight-color: #58b19f;
+$highlight-color: #ffcccc;
 $large-font-size: 1.4rem;
 $font-size: 1rem;
 $small-font-size: 0.8rem;
 $fade-color: #e6e6e6;
+$gray: #4b4b4b;
 
 /* icons */
 $icon-size: 1.2rem;
@@ -91,10 +94,10 @@ form {
   justify-content: center;
   align-items: center;
   gap: $common-size;
-  .player {
+  > .player {
     display: flex;
   }
-  .container.gameboard {
+  .gameboard.container {
     width: 30vw;
     aspect-ratio: 1/1;
     > div {
@@ -104,42 +107,43 @@ form {
       border: 0.5px dashed rgb(162, 162, 162);
     }
   }
-  .container.ships {
-    $base-size: var(--base-size);
-    $color: #e6e6e6;
-    $border-color: #6b6b6b;
-    $border-radius: 50%;
+  .ships.container > .ships {
+    $base-size: var(--base-unit-size);
+    $ship-color: $highlight-color;
+    $border-color: $gray;
+    $border-radius: 3px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 10px;
+    filter: brightness(115%);
     .ship:hover {
       background-color: $border-color;
     }
     .ship {
-      background-color: $color;
-      border: 0.2px solid $border-color;
+      background-color: $ship-color;
+      border: 2px solid $border-color;
       border-radius: $border-radius;
     }
     .destroyer {
-      height: calc($base-size * 0.7);
+      height: $base-size;
       width: calc($base-size * 2);
     }
     .submarine {
-      height: calc($base-size * 0.7);
+      height: $base-size;
       width: calc($base-size * 3);
     }
     .cruiser {
-      height: calc($base-size * 0.7);
+      height: $base-size;
       width: calc($base-size * 3);
     }
     .battleship {
-      height: calc($base-size * 0.9);
+      height: $base-size;
       width: calc($base-size * 4);
     }
     .carrier {
-      height: calc($base-size * 1);
+      height: $base-size;
       width: calc($base-size * 5);
     }
   }

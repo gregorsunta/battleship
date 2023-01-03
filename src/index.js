@@ -2,11 +2,18 @@ import './components/gameloop.js';
 import './stylesheets/style.scss';
 import Gameloop from './components/gameloop.js';
 
-const customObj = {
-  firstName: 'Gregor',
-  secondName: '',
+const customLeftObj = {
+  leftName: 'Gregor',
+  computerOption: false,
+  gameboardSize: '10',
+};
+const customRightObj = {
+  rightName: '',
   computerOption: true,
   gameboardSize: '10',
 };
-Gameloop.initiateGame(customObj);
-// Gameloop.enableShipPlacement();
+const game = Gameloop.initiateGame(customLeftObj, customRightObj);
+Gameloop.enableShipPlacement(
+  game.players.rightPlayer,
+  game.elements.rightElements,
+);

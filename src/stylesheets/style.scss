@@ -108,7 +108,8 @@ form {
     }
   }
   .ships.container > .ships {
-    $base-size: var(--base-unit-size);
+    $border-width: 2px;
+    $base-size: calc(var(--base-unit-size) - $border-width);
     $ship-color: $highlight-color;
     $border-color: $gray;
     $border-radius: 3px;
@@ -123,7 +124,7 @@ form {
     }
     .ship {
       background-color: $ship-color;
-      border: 2px solid $border-color;
+      border: $border-width solid $border-color;
       border-radius: $border-radius;
     }
     .destroyer {
@@ -169,4 +170,13 @@ input {
 }
 .hide {
   display: none !important;
+}
+.hover {
+  background-color: #2c3a47;
+}
+.checked {
+  background-color: #6b8eb0;
+}
+.placed {
+  opacity: 0.5;
 }

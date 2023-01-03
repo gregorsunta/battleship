@@ -6,6 +6,7 @@ const Ship = function (size) {
     // start: undefined,
     orient: 'v',
     hits: 0,
+    placed: false,
     hit() {
       return ++this.hits;
     },

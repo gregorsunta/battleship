@@ -41,6 +41,18 @@ test("check if the carrier is not placed when a square's out of bounds", () => {
   expect(Gameboard1.squares[`6,1`].occupies).toBeNull();
   expect(Gameboard1.squares[`9,1`].occupies).toBeNull();
 });
+test('check if the carrier is placed', () => {
+  const Gameboard1 = new Gameboard();
+  Gameboard1.createBoard();
+  Gameboard1.placeShip('carrier', `5,9`, 'h');
+
+  expect(Gameboard1.squares[`6,9`].occupies).toStrictEqual(
+    Gameboard1.ships['carrier'],
+  );
+  expect(Gameboard1.squares[`9,9`].occupies).toStrictEqual(
+    Gameboard1.ships['carrier'],
+  );
+});
 test("check if the carrier is not placed when a square's occupied", () => {
   const Gameboard1 = new Gameboard();
   Gameboard1.createBoard();

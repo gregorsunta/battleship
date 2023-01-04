@@ -39,6 +39,7 @@ const game = (function () {
       gameboard: container.querySelector('.left .gameboard.container'),
       ships: container.querySelector('.left .ships.container'),
     },
+    button: container.querySelector('button.continue'),
     rightPlayer: {
       container: container.querySelector('.right.player'),
       gameboard: container.querySelector('.right .gameboard.container'),

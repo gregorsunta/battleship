@@ -70,9 +70,9 @@ const Gameloop = (function () {
     // const playerContainer = game.container.querySelector('.container.player');
     const createPlayerData = (obj) => {
       if (obj.computerOption) {
-        return new Player('Computer', true);
+        return new Player('Computer', true, obj.gameboardSize);
       } else {
-        return new Player(obj.name, false);
+        return new Player(obj.name, false, obj.gameboardSize);
       }
     };
     const createGameElements = function (player) {
@@ -101,7 +101,7 @@ const Gameloop = (function () {
           shipEl.dataset.owner = `${player.name}`;
           ships.append(shipEl);
         }
-        ships.classList.add('ships');
+        ships.classList.add('ships', 'hide');
         return ships;
       };
       return { gridContainer: createGrid(), shipContainer: createShips() };
@@ -117,8 +117,6 @@ const Gameloop = (function () {
     };
     const data = createPlayerData(obj);
     const elements = createGameElements(data);
-    // playerContainer.gameboard.append(elements.gridContainer);
-    // playerContainer.ships.append(elements.shipContainer);
 
     showElement(gameContainer);
     // setBaseUnitSize();
@@ -127,6 +125,7 @@ const Gameloop = (function () {
   const enableShipPlacement = function (player) {
     const data = player.data;
     const elements = player.elements;
+    player.elements.shipContainer.classList.remove('hide');
     const enableDraggable = function (shipList) {
       for (let ship of Object.values(shipList)) {
         ship.setAttribute('draggable', true);
@@ -145,35 +144,67 @@ const Gameloop = (function () {
       for (let square of Object.values(grid)) {
         square.addEventListener('dragover', (e) => {
           e.preventDefault();
-        });
-        square.addEventListener('dragenter', (e) => {
-          e.preventDefault();
-          // const ship = e.dataTransfer.mozSourceNode.data.type
-          e.target.classList.add('hover');
-          // player.gameboard.checkPlacement(e.target.data.id);
+          const ship =
+            data.gameboard.ships[e.dataTransfer.mozSourceNode.dataset.type];
+          const squareStr = e.target.dataset.id;
+          const status = data.gameboard.checkPlacement(squareStr, ship, 'v');
+          for (let squareStr of status.elements) {
+            const squareEl = elements.gridContainer.querySelector(
+              `[data-id="${squareStr}"]`,
+            );
+            if (status.valid) {
+              squareEl.classList.add('place');
+            } else {
+              squareEl.classList.add('invalid-place');
+            }
+            // square.classList.add('hover');
+          }
         });
         square.addEventListener('dragleave', (e) => {
           e.preventDefault();
-          e.target.classList.remove('hover');
+          const ship =
+            data.gameboard.ships[e.dataTransfer.mozSourceNode.dataset.type];
+          const squareStr = e.target.dataset.id;
+          const selectedSquares = data.gameboard.checkPlacement(
+            squareStr,
+            ship,
+            'v',
+          ).elements;
+          for (let squareStr of selectedSquares) {
+            const squareEl = elements.gridContainer.querySelector(
+              `[data-id="${squareStr}"]`,
+            );
+            squareEl.classList.remove('place');
+            squareEl.classList.remove('invalid-place');
+          }
         });
         square.addEventListener('drop', (e) => {
-          e.target.classList.remove('hover');
           e.preventDefault();
-          const selectedSquares = data.gameboard.placeShip(
-            e.dataTransfer.mozSourceNode.dataset.type,
-            square.dataset.id,
-          );
-          if (selectedSquares) {
-            e.dataTransfer.mozSourceNode.classList.add('placed');
-            e.dataTransfer.mozSourceNode.setAttribute('draggable', false);
-            for (let squareStr of selectedSquares) {
-              elements.gridContainer
-                .querySelector(`[data-id="${squareStr}"]`)
-                .classList.add('checked');
+          const ship =
+            data.gameboard.ships[e.dataTransfer.mozSourceNode.dataset.type];
+          const squareStr = e.target.dataset.id;
+          const status = data.gameboard.checkPlacement(squareStr, ship, 'v');
+          if (status.valid) {
+            for (let squareStr of status.elements) {
+              const squareEl = elements.gridContainer.querySelector(
+                `[data-id="${squareStr}"]`,
+              );
+              squareEl.classList.remove('place');
+              squareEl.classList.add('placed');
+              data.gameboard.placeShip(
+                e.dataTransfer.mozSourceNode.dataset.type,
+                squareStr,
+              );
+              e.dataTransfer.mozSourceNode.setAttribute('draggable', false);
+              e.dataTransfer.mozSourceNode.classList.add('used');
             }
-            e.target.classList.add('checked');
           } else {
-            // show some error
+            for (let squareStr of status.elements) {
+              const squareEl = elements.gridContainer.querySelector(
+                `[data-id="${squareStr}"]`,
+              );
+              squareEl.classList.remove('invalid-place');
+            }
           }
         });
       }
@@ -182,36 +213,61 @@ const Gameloop = (function () {
     addShipEventListener(elements.shipContainer.querySelectorAll('.ship'));
     addGridEventListener(elements.gridContainer.querySelectorAll('.square'));
   };
+  const disableShipPlacement = function (player) {
+    player.elements.shipContainer.classList.add('hide');
+    // hide ships
+    // removeeventlistener from all squares
+    const squares = player.elements.gridContainer.childNodes;
+    for (let square of squares) {
+      const oldSquare = square;
+      const newSquare = oldSquare.cloneNode(true);
+      oldSquare.parentNode.replaceChild(newSquare, oldSquare);
+    }
+  };
+  const hidePlacedShips = function () {};
+  const showPlacedShips = function () {};
+  const changeTurn = function (curActivePlayer, curInactivePlayer) {};
   const hideElement = function (container) {
     container.classList.add('hide');
   };
   const showElement = function (container) {
     container.classList.remove('hide');
   };
-
   /* loop */
-  // processForm();
+  processForm();
 
   const customLeftObj = {
     leftName: 'Gregor',
     computerOption: false,
-    gameboardSize: '10',
+    gameboardSize: '13',
   };
   const customRightObj = {
     rightName: '',
     computerOption: true,
-    gameboardSize: '10',
+    gameboardSize: '7',
   };
   const left = game.leftPlayer;
   const right = game.rightPlayer;
   const gameComponentsLeft = createGameComponents(customLeftObj);
-  const gameComponentsRight = createGameComponents(customLeftObj);
+  const gameComponentsRight = createGameComponents(customRightObj);
   left.gameboard.append(gameComponentsLeft.elements.gridContainer);
   left.ships.append(gameComponentsLeft.elements.shipContainer);
   right.gameboard.append(gameComponentsRight.elements.gridContainer);
   right.ships.append(gameComponentsRight.elements.shipContainer);
+
+  const curActivePlayer = gameComponentsLeft;
+  const curInactivePlayer = gameComponentsRight;
+  game.button.addEventListener('click', (e) => {
+    console.log(curActivePlayer.data.gameboard.isOneShipPlaced());
+    console.log(curInactivePlayer.data.gameboard.isOneShipPlaced());
+    if (curActivePlayer.data.gameboard.isOneShipPlaced()) {
+      console.log('here');
+    }
+  });
   hideElement(form.container);
   enableShipPlacement(gameComponentsLeft);
+  // enableShipPlacement(gameComponentsRight);
+  // disableShipPlacement(gameComponentsLeft);
   return {
     createGameComponents,
     processForm,

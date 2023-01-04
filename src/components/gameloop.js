@@ -4,7 +4,7 @@ import { form, game } from '/src/components/dom.js';
 import Player from '/src/components/player.js';
 
 const Gameloop = (function () {
-  const processForm = (function () {
+  const processForm = function () {
     const options = form.options;
     const players = form.players;
     const addFormEventListeners = () => {
@@ -23,8 +23,9 @@ const Gameloop = (function () {
           players.playerOne.input.validity.valid &&
           players.playerTwo.input.validity.valid
         ) {
-          initiateGame(getFormInput(players, options));
+          createGameComponents(getFormInput(players, options));
           form.container.reset();
+          hideElement(form.container);
         } else {
           for (let player in players) {
             displayError(players[player]);
@@ -63,14 +64,17 @@ const Gameloop = (function () {
       }
     };
     addFormEventListeners();
-  })();
-  const initiateGame = function (leftObj, rightObj) {
+  };
+  const createGameComponents = function (obj) {
     const gameContainer = game.container;
-    const leftPlayer = game.leftPlayer;
-    const rightPlayer = game.rightPlayer;
-
-    const players = createPlayers(leftObj, rightObj);
-
+    // const playerContainer = game.container.querySelector('.container.player');
+    const createPlayerData = (obj) => {
+      if (obj.computerOption) {
+        return new Player('Computer', true);
+      } else {
+        return new Player(obj.name, false);
+      }
+    };
     const createGameElements = function (player) {
       const createGrid = () => {
         const grid = document.createElement('div');
@@ -80,7 +84,7 @@ const Gameloop = (function () {
           const squareEl = document.createElement('div');
           squareEl.classList.add('square');
           squareEl.dataset.id = [`${key}`];
-          squareEl.dataset.owner = [`${player.player.name}`];
+          squareEl.dataset.owner = [`${player.name}`];
           grid.append(squareEl);
           grid.style.height = `100%`;
           grid.style.width = `100%`;
@@ -94,7 +98,7 @@ const Gameloop = (function () {
           const shipEl = document.createElement('div');
           shipEl.classList.add('ship', `${key}`);
           shipEl.dataset.type = `${key}`;
-          shipEl.dataset.owner = `${player.player.name}`;
+          shipEl.dataset.owner = `${player.name}`;
           ships.append(shipEl);
         }
         ships.classList.add('ships');
@@ -111,23 +115,18 @@ const Gameloop = (function () {
         `${squareHeight}px`,
       );
     };
-    const leftElements = createGameElements(players.leftPlayer);
-    const rightElements = createGameElements(players.rightPlayer);
-    const elements = { leftElements, rightElements };
-    leftPlayer.gameboard.append(leftElements.gridContainer);
-    leftPlayer.ships.append(leftElements.shipContainer);
-    rightPlayer.gameboard.append(rightElements.gridContainer);
-    rightPlayer.ships.append(rightElements.shipContainer);
+    const data = createPlayerData(obj);
+    const elements = createGameElements(data);
+    // playerContainer.gameboard.append(elements.gridContainer);
+    // playerContainer.ships.append(elements.shipContainer);
 
-    hideElement(form.container);
     showElement(gameContainer);
-    setBaseUnitSize();
-    return { players, elements };
-    // showElement(document.querySelector(`[data-id="0,0"]`));
+    // setBaseUnitSize();
+    return { data, elements };
   };
-  const enableShipPlacement = function (selectedPlayer, playerElements) {
-    const player = selectedPlayer;
-    const elements = playerElements;
+  const enableShipPlacement = function (player) {
+    const data = player.data;
+    const elements = player.elements;
     const enableDraggable = function (shipList) {
       for (let ship of Object.values(shipList)) {
         ship.setAttribute('draggable', true);
@@ -149,7 +148,9 @@ const Gameloop = (function () {
         });
         square.addEventListener('dragenter', (e) => {
           e.preventDefault();
+          // const ship = e.dataTransfer.mozSourceNode.data.type
           e.target.classList.add('hover');
+          // player.gameboard.checkPlacement(e.target.data.id);
         });
         square.addEventListener('dragleave', (e) => {
           e.preventDefault();
@@ -158,7 +159,7 @@ const Gameloop = (function () {
         square.addEventListener('drop', (e) => {
           e.target.classList.remove('hover');
           e.preventDefault();
-          const selectedSquares = player.gameboard.placeShip(
+          const selectedSquares = data.gameboard.placeShip(
             e.dataTransfer.mozSourceNode.dataset.type,
             square.dataset.id,
           );
@@ -181,35 +182,44 @@ const Gameloop = (function () {
     addShipEventListener(elements.shipContainer.querySelectorAll('.ship'));
     addGridEventListener(elements.gridContainer.querySelectorAll('.square'));
   };
-  // UTILITY FUNCTIONS
   const hideElement = function (container) {
     container.classList.add('hide');
   };
   const showElement = function (container) {
     container.classList.remove('hide');
   };
-  const createPlayer = (obj) => {
-    if (obj.computerOption) {
-      return new Player('Computer', true);
-    } else {
-      return new Player(obj.name, false);
-    }
+
+  /* loop */
+  // processForm();
+
+  const customLeftObj = {
+    leftName: 'Gregor',
+    computerOption: false,
+    gameboardSize: '10',
   };
-  const createPlayers = function (leftObj, rightObj) {
-    const leftPlayer = createPlayer(leftObj);
-    const rightPlayer = createPlayer(rightObj);
-    return {
-      leftPlayer: {
-        player: leftPlayer,
-        gameboard: leftPlayer.attachGameboard(leftObj.gameboardSize),
-      },
-      rightPlayer: {
-        player: rightPlayer,
-        gameboard: leftPlayer.attachGameboard(rightObj.gameboardSize),
-      },
-    };
+  const customRightObj = {
+    rightName: '',
+    computerOption: true,
+    gameboardSize: '10',
   };
-  return { initiateGame, processForm, enableShipPlacement };
+  const left = game.leftPlayer;
+  const right = game.rightPlayer;
+  const gameComponentsLeft = createGameComponents(customLeftObj);
+  const gameComponentsRight = createGameComponents(customLeftObj);
+  left.gameboard.append(gameComponentsLeft.elements.gridContainer);
+  left.ships.append(gameComponentsLeft.elements.shipContainer);
+  right.gameboard.append(gameComponentsRight.elements.gridContainer);
+  right.ships.append(gameComponentsRight.elements.shipContainer);
+  hideElement(form.container);
+  enableShipPlacement(gameComponentsLeft);
+  return {
+    createGameComponents,
+    processForm,
+    enableShipPlacement,
+    hideElement,
+    showElement,
+    // enableAttack,
+  };
 })();
 
 export default Gameloop;

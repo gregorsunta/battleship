@@ -2,14 +2,13 @@ import Player from '../components/player.js';
 
 test('check if creating a new instance of player creates its own gameboard', () => {
   const player = new Player();
-  expect(player.attachGameboard()).toStrictEqual(player.Gameboard);
+  expect(player.Gameboard).toStrictEqual(player.Gameboard);
 });
 test('check if enemy ship receives attack', () => {
   const player1 = new Player();
   player1.attachGameboard();
 
   const player2 = new Player();
-  player2.attachGameboard();
   player2.Gameboard.placeShip('destroyer', '1,1', 'v');
 
   player1.attack(player2, '1,1');
@@ -19,10 +18,8 @@ test('check if enemy ship receives attack', () => {
 });
 test('check if computer player makes move', () => {
   const player1 = new Player();
-  player1.attachGameboard();
-
   const player2 = new Player();
-  player2.attachGameboard();
+
   player2.Gameboard.placeShip('carrier', '0,0', 'v');
   player2.Gameboard.placeShip('carrier', '1,0', 'v');
   player2.Gameboard.placeShip('carrier', '2,0', 'v');

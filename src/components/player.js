@@ -3,21 +3,22 @@
 import Gameboard from './gameboard.js';
 import Ships from './ship.js';
 
-const Player = function (name, isComputer = false) {
+const Player = function (name, isComputer = false, size) {
+  const attachGameboard = function (size) {
+    const gameboard = new Gameboard();
+    gameboard.createBoard(size);
+    return gameboard;
+  };
   return {
     name: name,
     isComputer: isComputer,
     previousHit: false,
-    attachGameboard(size) {
-      this.Gameboard = new Gameboard();
-      this.Gameboard.createBoard(size);
-      return this.Gameboard;
-    },
+    gameboard: attachGameboard(size),
     attack(enemy, move) {
-      return enemy.Gameboard.receiveAttack(move);
+      return enemy.gameboard.receiveAttack(move);
     },
     computerAttack(enemy) {
-      const gameboardSize = this.Gameboard.size;
+      const gameboardSize = this.gameboard.size;
       const randomNumber = (gameboardSize) => {
         return Math.floor(Math.random() * gameboardSize);
       };
@@ -25,14 +26,14 @@ const Player = function (name, isComputer = false) {
         const square = `${randomNumber(gameboardSize)},${randomNumber(
           gameboardSize,
         )}`;
-        this.Gameboard.squares[square];
-        if (this.Gameboard.squares[square]?.isHit === false) {
+        this.gameboard.squares[square];
+        if (this.gameboard.squares[square]?.isHit === false) {
           return square;
         } else {
           return randomSquare();
         }
       };
-      return enemy.Gameboard.receiveAttack(randomSquare());
+      return enemy.gameboard.receiveAttack(randomSquare());
     },
   };
 };

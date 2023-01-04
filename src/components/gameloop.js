@@ -224,9 +224,24 @@ const Gameloop = (function () {
       oldSquare.parentNode.replaceChild(newSquare, oldSquare);
     }
   };
-  const hidePlacedShips = function () {};
-  const showPlacedShips = function () {};
-  const changeTurn = function (curActivePlayer, curInactivePlayer) {};
+  const enableAttack = function (player, enemy) {};
+  const hidePlacedShips = function (playerComponents) {
+    const shipSquares =
+      playerComponents.elements.gridContainer.querySelectorAll('.placed');
+    for (let square in shipSquares) {
+      square.classList.remove('placed');
+    }
+  };
+  const showPlacedShips = function (playerComponents) {
+    const squaresData = playerComponents.data.gameboard.squares;
+    const squaresElements = playerComponents.elements.gridContainers.childNodes;
+    for (let square of squaresData) {
+      if (square.occupies) {
+        squaresElements.querySelector(`[data-id="${square}"]`);
+      }
+    }
+  };
+  // const changeTurn = function (curActivePlayer, curInactivePlayer) {};
   const hideElement = function (container) {
     container.classList.add('hide');
   };
@@ -235,7 +250,7 @@ const Gameloop = (function () {
   };
   /* loop */
   processForm();
-
+  hideElement(form.container);
   const customLeftObj = {
     leftName: 'Gregor',
     computerOption: false,
@@ -248,24 +263,47 @@ const Gameloop = (function () {
   };
   const left = game.leftPlayer;
   const right = game.rightPlayer;
-  const gameComponentsLeft = createGameComponents(customLeftObj);
-  const gameComponentsRight = createGameComponents(customRightObj);
-  left.gameboard.append(gameComponentsLeft.elements.gridContainer);
-  left.ships.append(gameComponentsLeft.elements.shipContainer);
-  right.gameboard.append(gameComponentsRight.elements.gridContainer);
-  right.ships.append(gameComponentsRight.elements.shipContainer);
+  const playerComponentsLeft = createGameComponents(customLeftObj);
+  const playerComponentsRight = createGameComponents(customRightObj);
+  left.gameboard.append(playerComponentsLeft.elements.gridContainer);
+  left.ships.append(playerComponentsLeft.elements.shipContainer);
+  right.gameboard.append(playerComponentsRight.elements.gridContainer);
+  right.ships.append(playerComponentsRight.elements.shipContainer);
 
-  const curActivePlayer = gameComponentsLeft;
-  const curInactivePlayer = gameComponentsRight;
+  let curActivePlayer = playerComponentsLeft;
+  let curInactivePlayer = playerComponentsRight;
+  const phases = {
+    formProcessing: 1,
+    shipPlacement: 2,
+    playing: 3,
+    win: 4,
+  };
+  let phase = phases.shipPlacement;
+  const changeActivePlayer = function () {
+    const temp = curActivePlayer;
+    curActivePlayer = curInactivePlayer;
+    curInactivePlayer = temp;
+  };
+  enableShipPlacement(playerComponentsLeft);
   game.button.addEventListener('click', (e) => {
-    console.log(curActivePlayer.data.gameboard.isOneShipPlaced());
-    console.log(curInactivePlayer.data.gameboard.isOneShipPlaced());
-    if (curActivePlayer.data.gameboard.isOneShipPlaced()) {
-      console.log('here');
+    if (phase === 2) {
+      const shipReqOne = curActivePlayer.data.gameboard.isOneShipPlaced();
+      const shipReqTwo = curInactivePlayer.data.gameboard.isOneShipPlaced();
+      if (shipReqOne && shipReqTwo) {
+        disableShipPlacement(curActivePlayer);
+        phase = phases.playing;
+      } else if (shipReqOne || shipReqTwo) {
+        console.log('here');
+        const temp = curActivePlayer;
+        curActivePlayer = curInactivePlayer;
+        curInactivePlayer = temp;
+        disableShipPlacement(curInactivePlayer);
+        enableShipPlacement(curActivePlayer);
+      }
+    } else if (phase === 3) {
+      console.log('phase 3 came');
     }
   });
-  hideElement(form.container);
-  enableShipPlacement(gameComponentsLeft);
   // enableShipPlacement(gameComponentsRight);
   // disableShipPlacement(gameComponentsLeft);
   return {

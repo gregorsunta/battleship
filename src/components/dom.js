@@ -1,6 +1,6 @@
 'use strict';
 
-export { form, game };
+export { form, game, message };
 
 const form = (function () {
   const container = document.querySelector('.name.input.container');
@@ -45,5 +45,11 @@ const game = (function () {
       gameboard: container.querySelector('.right .gameboard.container'),
       ships: container.querySelector('.right .ships.container'),
     },
+  };
+})();
+const message = (function () {
+  const container = document.querySelector('.message.container');
+  return {
+    container,
   };
 })();

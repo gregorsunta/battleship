@@ -1,6 +1,6 @@
 'use strict';
 
-import { form, game } from '/src/components/dom.js';
+import { form, game, message } from '/src/components/dom.js';
 import Player from '/src/components/player.js';
 
 const Gameloop = (function () {
@@ -152,7 +152,8 @@ const Gameloop = (function () {
             const squareEl = elements.gridContainer.querySelector(
               `[data-id="${squareStr}"]`,
             );
-            if (status.valid) {
+            if (squareEl === null) {
+            } else if (status.valid) {
               squareEl.classList.add('place');
             } else {
               squareEl.classList.add('invalid-place');
@@ -174,8 +175,11 @@ const Gameloop = (function () {
             const squareEl = elements.gridContainer.querySelector(
               `[data-id="${squareStr}"]`,
             );
-            squareEl.classList.remove('place');
-            squareEl.classList.remove('invalid-place');
+            if (squareEl === null) {
+            } else {
+              squareEl.classList.remove('place');
+              squareEl.classList.remove('invalid-place');
+            }
           }
         });
         square.addEventListener('drop', (e) => {
@@ -203,7 +207,10 @@ const Gameloop = (function () {
               const squareEl = elements.gridContainer.querySelector(
                 `[data-id="${squareStr}"]`,
               );
-              squareEl.classList.remove('invalid-place');
+              if (squareEl === null) {
+              } else {
+                squareEl.classList.remove('invalid-place');
+              }
             }
           }
         });
@@ -224,32 +231,64 @@ const Gameloop = (function () {
       oldSquare.parentNode.replaceChild(newSquare, oldSquare);
     }
   };
-  const enableAttack = function (player, enemy) {
-    const enemySquareNodes = enemy.elements.gridContainer.childNodes;
-    for (let squareNode of enemySquareNodes) {
+  const enableAttackOn = function (playerArg, phaseArg = gameProperties) {
+    const squareNodes = playerArg.elements.gridContainer.childNodes;
+    const processAttack = function (attackResultArg, squareNode) {
+      if (attackResultArg === null) {
+        squareNode.classList.add('miss');
+      } else if (attackResultArg) {
+        squareNode.classList.add('hit');
+        if (playerArg.data.checkForLoss()) {
+          showElement(message.container);
+          disableAttackOn(playerArg);
+          gameProperties.phase = phases.win;
+        }
+      }
+    };
+    for (let squareNode of squareNodes) {
       squareNode.addEventListener('click', () => {
-        const attackResult = player.data.attack(
-          enemy.data,
+        const attackContent = playerArg.data.gameboard.receiveAttack(
           squareNode.dataset.id,
         );
-        if (attackResult === null) {
-          squareNode.classList.add('miss');
-        } else if (attackResult) {
-          squareNode.classList.add('hit');
-          if (enemy.data.checkForLoss()) {
-            console.log(`${player.data.name} won the game`);
-          }
-        }
-        disableReceivingAttack(enemy);
+        processAttack(attackContent, squareNode);
+        disableAttackOn(playerArg);
       });
     }
   };
-  const disableReceivingAttack = function (player) {
+  const changeOrientation = function () {};
+  const disableAttackOn = function (player) {
     const squareNodes = player.elements.gridContainer.childNodes;
     for (let squareNode of squareNodes) {
       const oldSquare = squareNode;
       const newSquare = oldSquare.cloneNode(true);
       oldSquare.parentNode.replaceChild(newSquare, oldSquare);
+    }
+  };
+  const processPhase = function (gamePropertiesArg) {
+    if (gamePropertiesArg.phase === 2) {
+      const shipReqOne = curActivePlayer.data.gameboard.isOneShipPlaced();
+      const shipReqTwo = curInactivePlayer.data.gameboard.isOneShipPlaced();
+      if (shipReqOne && shipReqTwo) {
+        disableShipPlacement(curActivePlayer);
+        gamePropertiesArg.phase = phases.playing;
+        processPhase(gamePropertiesArg);
+      } else if (shipReqOne || shipReqTwo) {
+        const temp = curActivePlayer;
+        curActivePlayer = curInactivePlayer;
+        curInactivePlayer = temp;
+        disableShipPlacement(curInactivePlayer);
+        enableShipPlacement(curActivePlayer);
+      }
+    } else if (gamePropertiesArg.phase === 3) {
+      const temp = curActivePlayer;
+      curActivePlayer = curInactivePlayer;
+      curInactivePlayer = temp;
+      enableAttackOn(curActivePlayer, curInactivePlayer);
+      if (enableAttackOn.status) {
+      }
+    } else if (gamePropertiesArg.phase === 4) {
+      changeMessage().win(curActivePlayer);
+      gamePropertiesArg.phase = 1;
     }
   };
   const hidePlacedShips = function (playerComponents) {
@@ -268,7 +307,17 @@ const Gameloop = (function () {
       }
     }
   };
-  // const changeTurn = function (curActivePlayer, curInactivePlayer) {};
+  const changeMessage = function (container = message.container) {
+    const messageContainer = container;
+    return {
+      win: (player) => {
+        messageContainer.textContent = `The winner is ${player.data.name}`;
+      },
+      turn: (player) => {
+        messageContainer.textContent = `It is ${player.data.name}'s turn`;
+      },
+    };
+  };
   const hideElement = function (container) {
     container.classList.add('hide');
   };
@@ -276,6 +325,16 @@ const Gameloop = (function () {
     container.classList.remove('hide');
   };
   /* loop */
+  const phases = {
+    formProcessing: 1,
+    shipPlacement: 2,
+    playing: 3,
+    win: 4,
+  };
+  let gameProperties = {
+    phase: phases.shipPlacement,
+  };
+
   processForm();
   hideElement(form.container);
   const customLeftObj = {
@@ -299,39 +358,11 @@ const Gameloop = (function () {
 
   let curActivePlayer = playerComponentsLeft;
   let curInactivePlayer = playerComponentsRight;
-  const phases = {
-    formProcessing: 1,
-    shipPlacement: 2,
-    playing: 3,
-    win: 4,
-  };
-  let phase = phases.shipPlacement;
+
   enableShipPlacement(playerComponentsLeft);
   game.button.addEventListener('click', (e) => {
-    if (phase === 2) {
-      const shipReqOne = curActivePlayer.data.gameboard.isOneShipPlaced();
-      const shipReqTwo = curInactivePlayer.data.gameboard.isOneShipPlaced();
-      if (shipReqOne && shipReqTwo) {
-        disableShipPlacement(curActivePlayer);
-        phase = phases.playing;
-      } else if (shipReqOne || shipReqTwo) {
-        const temp = curActivePlayer;
-        curActivePlayer = curInactivePlayer;
-        curInactivePlayer = temp;
-        disableShipPlacement(curInactivePlayer);
-        enableShipPlacement(curActivePlayer);
-      }
-    } else if (phase === 3) {
-      const temp = curActivePlayer;
-      curActivePlayer = curInactivePlayer;
-      curInactivePlayer = temp;
-      enableAttack(curActivePlayer, curInactivePlayer);
-    }
+    processPhase(gameProperties);
   });
-  let b = 0;
-
-  // enableShipPlacement(gameComponentsRight);
-  // disableShipPlacement(gameComponentsLeft);
   return {
     createGameComponents,
     processForm,

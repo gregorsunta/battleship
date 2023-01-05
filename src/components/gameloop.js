@@ -1,6 +1,6 @@
 'use strict';
 
-import { form, game, message } from '/src/components/dom.js';
+import { form, game, message, orientationButton } from '/src/components/dom.js';
 import Player from '/src/components/player.js';
 
 const Gameloop = (function () {
@@ -122,6 +122,17 @@ const Gameloop = (function () {
     // setBaseUnitSize();
     return { data, elements };
   };
+  const changeOrientation = function (button, gamePropertiesArg) {
+    button.addEventListener('click', () => {
+      if (gamePropertiesArg.placementOrientation === 'v') {
+        button.textContent = 'h';
+        gamePropertiesArg.placementOrientation = 'h';
+      } else {
+        button.textContent = 'v';
+        gamePropertiesArg.placementOrientation = 'v';
+      }
+    });
+  };
   const enableShipPlacement = function (player) {
     const data = player.data;
     const elements = player.elements;
@@ -143,11 +154,16 @@ const Gameloop = (function () {
       const grid = squareList;
       for (let square of Object.values(grid)) {
         square.addEventListener('dragover', (e) => {
+          const orientation = gameProperties.placementOrientation;
           e.preventDefault();
           const ship =
             data.gameboard.ships[e.dataTransfer.mozSourceNode.dataset.type];
           const squareStr = e.target.dataset.id;
-          const status = data.gameboard.checkPlacement(squareStr, ship, 'v');
+          const status = data.gameboard.checkPlacement(
+            squareStr,
+            ship,
+            orientation,
+          );
           for (let squareStr of status.elements) {
             const squareEl = elements.gridContainer.querySelector(
               `[data-id="${squareStr}"]`,
@@ -162,6 +178,7 @@ const Gameloop = (function () {
           }
         });
         square.addEventListener('dragleave', (e) => {
+          const orientation = gameProperties.placementOrientation;
           e.preventDefault();
           const ship =
             data.gameboard.ships[e.dataTransfer.mozSourceNode.dataset.type];
@@ -169,7 +186,7 @@ const Gameloop = (function () {
           const selectedSquares = data.gameboard.checkPlacement(
             squareStr,
             ship,
-            'v',
+            orientation,
           ).elements;
           for (let squareStr of selectedSquares) {
             const squareEl = elements.gridContainer.querySelector(
@@ -183,11 +200,16 @@ const Gameloop = (function () {
           }
         });
         square.addEventListener('drop', (e) => {
+          const orientation = gameProperties.placementOrientation;
           e.preventDefault();
           const ship =
             data.gameboard.ships[e.dataTransfer.mozSourceNode.dataset.type];
           const squareStr = e.target.dataset.id;
-          const status = data.gameboard.checkPlacement(squareStr, ship, 'v');
+          const status = data.gameboard.checkPlacement(
+            squareStr,
+            ship,
+            orientation,
+          );
           if (status.valid) {
             for (let squareStr of status.elements) {
               const squareEl = elements.gridContainer.querySelector(
@@ -198,6 +220,7 @@ const Gameloop = (function () {
               data.gameboard.placeShip(
                 e.dataTransfer.mozSourceNode.dataset.type,
                 squareStr,
+                orientation,
               );
               e.dataTransfer.mozSourceNode.setAttribute('draggable', false);
               e.dataTransfer.mozSourceNode.classList.add('used');
@@ -242,6 +265,7 @@ const Gameloop = (function () {
           showElement(message.container);
           disableAttackOn(playerArg);
           gameProperties.phase = phases.win;
+          processPhase(gameProperties);
         }
       }
     };
@@ -255,7 +279,6 @@ const Gameloop = (function () {
       });
     }
   };
-  const changeOrientation = function () {};
   const disableAttackOn = function (player) {
     const squareNodes = player.elements.gridContainer.childNodes;
     for (let squareNode of squareNodes) {
@@ -333,6 +356,7 @@ const Gameloop = (function () {
   };
   let gameProperties = {
     phase: phases.shipPlacement,
+    placementOrientation: 'v',
   };
 
   processForm();
@@ -360,6 +384,7 @@ const Gameloop = (function () {
   let curInactivePlayer = playerComponentsRight;
 
   enableShipPlacement(playerComponentsLeft);
+  changeOrientation(orientationButton, gameProperties);
   game.button.addEventListener('click', (e) => {
     processPhase(gameProperties);
   });

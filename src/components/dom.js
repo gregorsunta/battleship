@@ -1,6 +1,6 @@
 'use strict';
 
-export { form, game, message };
+export { form, game, message, orientationButton };
 
 const form = (function () {
   const container = document.querySelector('.name.input.container');
@@ -52,4 +52,8 @@ const message = (function () {
   return {
     container,
   };
+})();
+const orientationButton = (function () {
+  const button = document.querySelector('button.orientation');
+  return button;
 })();

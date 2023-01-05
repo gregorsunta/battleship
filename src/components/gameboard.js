@@ -119,12 +119,12 @@ const Gameboard = function () {
       }
     },
     areShipsSunk() {
-      for (let key of Object.keys(this.ships)) {
-        if (!this.ships[key].isSunk()) {
+      for (let ship of Object.keys(this.ships)) {
+        if (!this.ships[ship].isSunk() && this.ships[ship].placed) {
           return false;
         }
-        return true;
       }
+      return true;
     },
     receiveAttack(squareStr) {
       const squareIdStr = squareStr;
@@ -138,6 +138,7 @@ const Gameboard = function () {
         square.isHit = true;
         if (square.occupies) {
           square.occupies.hit();
+          console.log(square.occupies);
         }
         return square.occupies;
       }

@@ -3,7 +3,7 @@
 import Gameboard from './gameboard.js';
 import Ships from './ship.js';
 
-const Player = function (name, isComputer = false, size) {
+const Player = function (name = 'Computer', isComputer = false, size) {
   const attachGameboard = function (size) {
     const gameboard = new Gameboard();
     gameboard.createBoard(size);
@@ -34,6 +34,9 @@ const Player = function (name, isComputer = false, size) {
         }
       };
       return enemy.gameboard.receiveAttack(randomSquare());
+    },
+    checkForLoss() {
+      return this.gameboard.areShipsSunk();
     },
   };
 };

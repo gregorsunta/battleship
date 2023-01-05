@@ -70,7 +70,7 @@ const Gameloop = (function () {
     // const playerContainer = game.container.querySelector('.container.player');
     const createPlayerData = (obj) => {
       if (obj.computerOption) {
-        return new Player('Computer', true, obj.gameboardSize);
+        return new Player(obj.name, true, obj.gameboardSize);
       } else {
         return new Player(obj.name, false, obj.gameboardSize);
       }
@@ -224,7 +224,34 @@ const Gameloop = (function () {
       oldSquare.parentNode.replaceChild(newSquare, oldSquare);
     }
   };
-  const enableAttack = function (player, enemy) {};
+  const enableAttack = function (player, enemy) {
+    const enemySquareNodes = enemy.elements.gridContainer.childNodes;
+    for (let squareNode of enemySquareNodes) {
+      squareNode.addEventListener('click', () => {
+        const attackResult = player.data.attack(
+          enemy.data,
+          squareNode.dataset.id,
+        );
+        if (attackResult === null) {
+          squareNode.classList.add('miss');
+        } else if (attackResult) {
+          squareNode.classList.add('hit');
+          if (enemy.data.checkForLoss()) {
+            console.log(`${player.data.name} won the game`);
+          }
+        }
+        disableReceivingAttack(enemy);
+      });
+    }
+  };
+  const disableReceivingAttack = function (player) {
+    const squareNodes = player.elements.gridContainer.childNodes;
+    for (let squareNode of squareNodes) {
+      const oldSquare = squareNode;
+      const newSquare = oldSquare.cloneNode(true);
+      oldSquare.parentNode.replaceChild(newSquare, oldSquare);
+    }
+  };
   const hidePlacedShips = function (playerComponents) {
     const shipSquares =
       playerComponents.elements.gridContainer.querySelectorAll('.placed');
@@ -252,12 +279,12 @@ const Gameloop = (function () {
   processForm();
   hideElement(form.container);
   const customLeftObj = {
-    leftName: 'Gregor',
+    name: 'Gregor',
     computerOption: false,
     gameboardSize: '13',
   };
   const customRightObj = {
-    rightName: '',
+    name: 'Computer',
     computerOption: true,
     gameboardSize: '7',
   };
@@ -279,11 +306,6 @@ const Gameloop = (function () {
     win: 4,
   };
   let phase = phases.shipPlacement;
-  const changeActivePlayer = function () {
-    const temp = curActivePlayer;
-    curActivePlayer = curInactivePlayer;
-    curInactivePlayer = temp;
-  };
   enableShipPlacement(playerComponentsLeft);
   game.button.addEventListener('click', (e) => {
     if (phase === 2) {
@@ -293,7 +315,6 @@ const Gameloop = (function () {
         disableShipPlacement(curActivePlayer);
         phase = phases.playing;
       } else if (shipReqOne || shipReqTwo) {
-        console.log('here');
         const temp = curActivePlayer;
         curActivePlayer = curInactivePlayer;
         curInactivePlayer = temp;
@@ -301,9 +322,14 @@ const Gameloop = (function () {
         enableShipPlacement(curActivePlayer);
       }
     } else if (phase === 3) {
-      console.log('phase 3 came');
+      const temp = curActivePlayer;
+      curActivePlayer = curInactivePlayer;
+      curInactivePlayer = temp;
+      enableAttack(curActivePlayer, curInactivePlayer);
     }
   });
+  let b = 0;
+
   // enableShipPlacement(gameComponentsRight);
   // disableShipPlacement(gameComponentsLeft);
   return {

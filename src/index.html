@@ -13,49 +13,81 @@
     </header>
     <main>
       <div class="content container">
-        <form class="name input container" id="start-form">
-          <section class="option computer">
-            <p>Playing against the computer?</p>
-            <input type="checkbox" class="option computer" autocomplete="off" />
-          </section>
-          <section class="name input one">
-            <label>Player one:</label>
-            <input type="text" required />
-            <p class="error hide"></p>
-          </section>
-          <section class="name input two">
-            <label>Player two:</label>
-            <input type="text" required />
-            <p class="error hide"></p>
-          </section>
-          <p>Gameboard size</p>
-          <section class="option size">
-            <input
-              autocomplete="off"
-              type="range"
-              min="7"
-              max="15"
-              value="10"
-              name="gameboard-size"
-            />
-            <output name="result" for="gameboard-size gameboard-sizeA">
-              10</output
-            >
-          </section>
+        <form class="name input container hide" id="start-form">
+          <div class="players container">
+            <section class="player left container">
+              <section class="computer container">
+                <p>Computer player?</p>
+                <input
+                  type="checkbox"
+                  class="option computer"
+                  autocomplete="off"
+                />
+              </section>
+              <section class="name container">
+                <label>Name</label>
+                <input type="text" required />
+                <p class="error hide"></p>
+              </section>
+              <section class="size container">
+                <p>Gameboard size</p>
+                <input
+                  autocomplete="off"
+                  type="range"
+                  min="7"
+                  max="15"
+                  value="10"
+                  name="gameboard-size"
+                />
+                <output name="result" for="gameboard-size gameboard-sizeA">
+                  10</output
+                >
+              </section>
+            </section>
+            <section class="player right container">
+              <section class="computer container">
+                <p>Computer player?</p>
+                <input
+                  type="checkbox"
+                  class="option computer"
+                  autocomplete="off"
+                />
+              </section>
+              <section class="name container">
+                <label>Name</label>
+                <input type="text" required />
+                <p class="error hide"></p>
+              </section>
+              <section class="size container">
+                <p>Gameboard size</p>
+                <input
+                  autocomplete="off"
+                  type="range"
+                  min="7"
+                  max="15"
+                  value="10"
+                  name="gameboard-size"
+                />
+                <output name="result" for="gameboard-size gameboard-sizeA">
+                  10</output
+                >
+              </section>
+            </section>
+          </div>
           <button form="start-form" type="button">START</button>
         </form>
-        <div class="message container"></div>
-        <button class="orientation button"></button>
+        <div class="message container hide"></div>
+        <button class="orientation button hide"></button>
         <game>
           <div class="container game hide">
-            <div class="left player container">
-              <div class="gameboard container"></div>
-              <div class="ships container"></div>
+            <div class="left player gameboard container">
+              <!-- <div class="gameboard container"></div> -->
+              <!-- <div class="ships container"></div> -->
             </div>
             <button class="continue">continue</button>
-            <div class="right player container">
-              <div class="gameboard container"></div>
-              <div class="ships container"></div>
+            <div class="right player gameboard container">
+              <!-- <div class="gameboard container"></div> -->
+              <!-- <div class="ships container"></div> -->
             </div>
           </div>
         </game>

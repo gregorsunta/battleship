@@ -4,75 +4,91 @@ import { form, game, message, orientationButton } from '/src/components/dom.js';
 import Player from '/src/components/player.js';
 
 const Gameloop = (function () {
+  const formData = {};
   const processForm = function () {
-    const options = form.options;
-    const players = form.players;
-    const addFormEventListeners = () => {
-      options.optionComputer.input.addEventListener('input', () => {
-        togglePLayerTwo();
-      });
-      options.optionSize.input.addEventListener('input', () => {
-        displaySliderValue(options.optionSize.input, options.optionSize.output);
-      });
-      form.button.addEventListener('click', (e) => {
-        e.preventDefault();
-        for (let player in players) {
-          hideElement(players[player].error);
-        }
-        if (
-          players.playerOne.input.validity.valid &&
-          players.playerTwo.input.validity.valid
-        ) {
-          createGameComponents(getFormInput(players, options));
-          form.container.reset();
-          hideElement(form.container);
-        } else {
-          for (let player in players) {
-            displayError(players[player]);
-          }
-        }
-      });
+    showElement(form.container);
+    const leftPlayer = form.leftPlayer;
+    const rightPlayer = form.rightPlayer;
+    const togglePlayerInput = function (player) {
+      if (player.computer.input.checked) {
+        player.name.container.classList.add('fade');
+        // player.size.container.classList.add('fade');
+        player.name.input.disabled = true;
+        player.name.input.value = '';
+      } else {
+        // player.size.container.classList.remove('fade');
+        player.name.container.classList.remove('fade');
+        player.name.input.disabled = false;
+      }
     };
+    leftPlayer.computer.input.addEventListener('input', (e) => {
+      e.preventDefault();
+      togglePlayerInput(leftPlayer);
+    });
+    rightPlayer.computer.input.addEventListener('input', (e) => {
+      e.preventDefault();
+      togglePlayerInput(rightPlayer);
+    });
+    leftPlayer.size.input.addEventListener('input', () => {
+      displaySliderValue(leftPlayer);
+    });
+    rightPlayer.size.input.addEventListener('input', () => {
+      displaySliderValue(rightPlayer);
+    });
+    form.button.addEventListener('click', (e) => {
+      e.preventDefault();
+      const leftPlayerValid = leftPlayer.name.input.validity.valid;
+      const rightPlayerValid = rightPlayer.name.input.validity.valid;
+
+      // hideElement(rightPlayer.name.error);
+      // hideElement(leftPlayer.name.error);
+
+      if (leftPlayerValid && rightPlayerValid) {
+        hideElement(form.container);
+        formData.leftPlayer = getFormInput(leftPlayer);
+        formData.rightPlayer = getFormInput(rightPlayer);
+        gameProperties.phase = phases.componentCreation;
+        processPhase(gameProperties);
+        form.container.reset();
+      } else {
+        if (leftPlayerValid) {
+          displayError(leftPlayer);
+        }
+        if (rightPlayerValid) {
+          displayError(rightPlayer);
+        }
+      }
+    });
     const showError = function (errorContainer, msg) {
       errorContainer.classList.remove('hide');
       errorContainer.textContent = msg;
     };
-    const togglePLayerTwo = function () {
-      if (options.optionComputer.input.checked) {
-        players.playerTwo.container.classList.add('fade');
-        players.playerTwo.input.disabled = true;
-        players.playerTwo.input.value = '';
-      } else {
-        players.playerTwo.container.classList.remove('fade');
-        players.playerTwo.input.disabled = false;
-      }
+    const displaySliderValue = function (player) {
+      player.size.output.textContent = player.size.input.value;
     };
-    const displaySliderValue = function (input, output) {
-      output.textContent = input.value;
-    };
-    const getFormInput = function (players, options) {
-      const firstName = players.playerOne.input.value;
-      const secondName = players.playerTwo.input.value;
-      const computerOption = options.optionComputer.input.checked;
-      const gameboardSize = options.optionSize.input.value;
-
-      return { firstName, secondName, computerOption, gameboardSize };
+    const getFormInput = function (playerArg) {
+      const player = playerArg;
+      return {
+        name: player.name.input.value,
+        computer: player.computer.input.checked,
+        size: player.size.input.value,
+      };
     };
     const displayError = function (player) {
       if (player.input.validity.valueMissing) {
         showError(player.error, 'A name is required.');
       }
     };
-    addFormEventListeners();
+    // addFormEventListeners();
   };
   const createGameComponents = function (obj) {
     const gameContainer = game.container;
     // const playerContainer = game.container.querySelector('.container.player');
     const createPlayerData = (obj) => {
-      if (obj.computerOption) {
-        return new Player(obj.name, true, obj.gameboardSize);
+      if (obj.computer) {
+        return new Player(obj.name, true, obj.size);
       } else {
-        return new Player(obj.name, false, obj.gameboardSize);
+        return new Player(obj.name, false, obj.size);
       }
     };
     const createGameElements = function (player) {
@@ -101,7 +117,7 @@ const Gameloop = (function () {
           shipEl.dataset.owner = `${player.name}`;
           ships.append(shipEl);
         }
-        ships.classList.add('ships', 'hide');
+        ships.classList.add('ships', 'container', 'hide');
         return ships;
       };
       return { gridContainer: createGrid(), shipContainer: createShips() };
@@ -116,6 +132,8 @@ const Gameloop = (function () {
       );
     };
     const data = createPlayerData(obj);
+    console.log(data);
+
     const elements = createGameElements(data);
 
     showElement(gameContainer);
@@ -297,44 +315,6 @@ const Gameloop = (function () {
   const unfadePlayer = function (player) {
     player.elements.gridContainer.classList.remove('fade');
   };
-  const processPhase = function (gamePropertiesArg) {
-    const game = gamePropertiesArg;
-    if (game.phase === 1) {
-      enableShipPlacement(game.activeComponents);
-      game.phase = phases.shipPlacement;
-      processPhase(game);
-    } else if (game.phase === 2) {
-      const shipReqOne = game.activeComponents.data.gameboard.isOneShipPlaced();
-      const shipReqTwo =
-        game.inactiveComponents.data.gameboard.isOneShipPlaced();
-      if (shipReqOne && shipReqTwo) {
-        disableShipPlacement(game.activeComponents);
-        game.phase = phases.playing;
-        processPhase(game);
-      } else if (shipReqOne || shipReqTwo) {
-        const temp = game.activeComponents;
-        game.activeComponents = game.inactiveComponents;
-        game.inactiveComponents = temp;
-        disableShipPlacement(game.inactiveComponents);
-        enableShipPlacement(game.activeComponents);
-      }
-    } else if (game.phase === 3) {
-      const temp = game.activeComponents;
-      game.activeComponents = game.inactiveComponents;
-      game.inactiveComponents = temp;
-      fadePLayer(game.activeComponents);
-      unfadePlayer(game.inactiveComponents);
-      enableAttackOn(game.inactiveComponents, game.activeComponents);
-      changeMessage().turn(game.activeComponents);
-      if (enableAttackOn.status) {
-      }
-    } else if (game.phase === 4) {
-      unfadePlayer(game.activeComponents);
-      markWinner(game.activeComponents);
-      changeMessage().win(game.activeComponents);
-      game.phase = 1;
-    }
-  };
   const hidePlacedShips = function (playerComponents) {
     const shipSquares =
       playerComponents.elements.gridContainer.querySelectorAll('.placed');
@@ -368,7 +348,75 @@ const Gameloop = (function () {
   const showElement = function (container) {
     container.classList.remove('hide');
   };
-  /* loop */
+  const isShipPlaced = function (playerComponents) {
+    return playerComponents?.data.gameboard.isOneShipPlaced();
+  };
+  const processPhase = function (gamePropertiesArg) {
+    const gameData = gamePropertiesArg;
+    const gameElements = game;
+    if (gameData.phase === 0) {
+      showElement(form.container);
+      processForm();
+    } else if (gameData.phase === 1) {
+      console.log(formData);
+      gameProperties.activeComponents = createGameComponents(
+        formData.leftPlayer,
+      );
+      gameProperties.inactiveComponents = createGameComponents(
+        formData.rightPlayer,
+      );
+      gameElements.leftPlayer.container.append(
+        gameProperties.activeComponents.elements.gridContainer,
+        gameProperties.activeComponents.elements.shipContainer,
+      );
+      gameElements.rightPlayer.container.append(
+        gameProperties.inactiveComponents.elements.gridContainer,
+        gameProperties.inactiveComponents.elements.shipContainer,
+      );
+      showElement(gamePropertiesArg.activeComponents.elements.gridContainer);
+      showElement(gamePropertiesArg.inactiveComponents.elements.gridContainer);
+    } else if (gameData.phase === 2) {
+      enableShipPlacement(gameData.activeComponents);
+      gameData.phase = phases.shipPlacement;
+      processPhase(gameData);
+    } else if (gameData.phase === 3) {
+      if (
+        isShipPlaced(gameData.activeComponents) &&
+        isShipPlaced(gameData.inactiveComponents)
+      ) {
+        disableShipPlacement(gameData.activeComponents);
+        gameData.phase = phases.playing;
+        processPhase(gameData);
+      } else if (
+        isShipPlaced(gameData.activeComponents) ||
+        isShipPlaced(gameData.inactiveComponents)
+      ) {
+        const temp = gameData.activeComponents;
+        gameData.activeComponents = gameData.inactiveComponents;
+        gameData.inactiveComponents = temp;
+        disableShipPlacement(gameData.inactiveComponents);
+        enableShipPlacement(gameData.activeComponents);
+      }
+    } else if (gameData.phase === 4) {
+      const temp = gameData.activeComponents;
+      gameData.activeComponents = gameData.inactiveComponents;
+      gameData.inactiveComponents = temp;
+      fadePLayer(gameData.activeComponents);
+      unfadePlayer(gameData.inactiveComponents);
+      enableAttackOn(gameData.inactiveComponents, gameData.activeComponents);
+      changeMessage().turn(gameData.activeComponents);
+      if (enableAttackOn.status) {
+      }
+    } else if (gameData.phase === 5) {
+      unfadePlayer(gameData.activeComponents);
+      markWinner(gameData.activeComponents);
+      changeMessage().win(gameData.activeComponents);
+      gameData.phase = phases.formProcessing;
+    }
+  };
+
+  // initialization
+
   const customLeftObj = {
     name: 'Gregor',
     computerOption: false,
@@ -379,32 +427,34 @@ const Gameloop = (function () {
     computerOption: true,
     gameboardSize: '7',
   };
-  const left = game.leftPlayer;
-  const right = game.rightPlayer;
-  const playerComponentsLeft = createGameComponents(customLeftObj);
-  const playerComponentsRight = createGameComponents(customRightObj);
-  left.gameboard.append(playerComponentsLeft.elements.gridContainer);
-  left.ships.append(playerComponentsLeft.elements.shipContainer);
-  right.gameboard.append(playerComponentsRight.elements.gridContainer);
-  right.ships.append(playerComponentsRight.elements.shipContainer);
+  // const left = game.leftPlayer;
+  // const right = game.rightPlayer;
+  // const playerComponentsLeft = createGameComponents(customLeftObj);
+  // const playerComponentsRight = createGameComponents(customRightObj);
+  // left.gameboard.append(playerComponentsLeft.elements.gridContainer);
+  // left.ships.append(playerComponentsLeft.elements.shipContainer);
+  // right.gameboard.append(playerComponentsRight.elements.gridContainer);
+  // right.ships.append(playerComponentsRight.elements.shipContainer);
   const phases = {
     formProcessing: 0,
-    starting: 1,
-    shipPlacement: 2,
-    playing: 3,
-    win: 4,
+    componentCreation: 1,
+    starting: 2,
+    shipPlacement: 3,
+    playing: 4,
+    win: 5,
   };
   const gameProperties = {
-    phase: phases.win,
+    phase: phases.formProcessing,
     placementOrientation: 'v',
-    activeComponents: playerComponentsLeft,
-    inactiveComponents: playerComponentsRight,
+    activeComponents: null,
+    inactiveComponents: null,
   };
-  processForm();
-  hideElement(form.container);
+  processPhase(gameProperties);
+  // processForm();
+  // hideElement(form.container);
 
-  enableShipPlacement(gameProperties.activeComponents);
-  changeOrientation(orientationButton, gameProperties);
+  // enableShipPlacement(gameProperties.activeComponents);
+  // changeOrientation(orientationButton, gameProperties);
   game.button.addEventListener('click', (e) => {
     processPhase(gameProperties);
   });

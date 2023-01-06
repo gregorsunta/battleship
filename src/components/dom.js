@@ -7,25 +7,38 @@ const form = (function () {
   return {
     container,
     button: container.querySelector('button'),
-    options: {
-      optionComputer: {
-        input: container.querySelector('.option.computer > input'),
+    leftPlayer: {
+      container: container.querySelector('.player.left.container'),
+      name: {
+        container: container.querySelector('.left > .name'),
+        input: container.querySelector('.left > .name > input'),
+        error: container.querySelector('.left > .error'),
       },
-      optionSize: {
-        input: container.querySelector('.option.size > input'),
-        output: container.querySelector('output'),
+      computer: {
+        container: container.querySelector('.left > .computer'),
+        input: container.querySelector('.left > .computer > input'),
+      },
+      size: {
+        container: container.querySelector('.left > .size'),
+        input: container.querySelector('.left > .size > input'),
+        output: container.querySelector('.left > .size > output'),
       },
     },
-    players: {
-      playerOne: {
-        container: container.querySelector('.name.input.one'),
-        input: container.querySelector('.one > input'),
-        error: container.querySelector('.one > .error'),
+    rightPlayer: {
+      container: container.querySelector('.player.right.container'),
+      name: {
+        container: container.querySelector('.right > .name'),
+        input: container.querySelector('.right > .name > input'),
+        message: container.querySelector('.right > .message'),
       },
-      playerTwo: {
-        container: container.querySelector('.name.input.two'),
-        input: container.querySelector('.two > input'),
-        error: container.querySelector('.two > .error'),
+      computer: {
+        container: container.querySelector('.right > .computer'),
+        input: container.querySelector('.right > .computer > input'),
+      },
+      size: {
+        container: container.querySelector('.right > .size'),
+        input: container.querySelector('.right > .size > input'),
+        output: container.querySelector('.right > .size > output'),
       },
     },
   };

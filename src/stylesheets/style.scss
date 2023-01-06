@@ -121,7 +121,7 @@ form {
       border: 0.5px dashed rgb(162, 162, 162);
     }
   }
-  .ships.container > .ships {
+  .ships.container {
     $border-width: 2px;
     $base-size: calc(var(--base-unit-size) - $border-width);
     $ship-color: $highlight-color;

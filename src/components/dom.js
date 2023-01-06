@@ -1,6 +1,6 @@
 'use strict';
 
-export { form, game, message, orientationButton };
+export { form, game, message };
 
 const form = (function () {
   const container = document.querySelector('.name.input.container');
@@ -52,7 +52,8 @@ const game = (function () {
       gameboard: container.querySelector('.left .gameboard.container'),
       ships: container.querySelector('.left .ships.container'),
     },
-    button: container.querySelector('button.continue'),
+    continueButton: container.querySelector('button.continue'),
+    orientationButton: container.querySelector('button.orientation'),
     rightPlayer: {
       container: container.querySelector('.right.player'),
       gameboard: container.querySelector('.right .gameboard.container'),
@@ -66,7 +67,7 @@ const message = (function () {
     container,
   };
 })();
-const orientationButton = (function () {
-  const button = document.querySelector('button.orientation');
-  return button;
-})();
+// const orientationButton = (function () {
+// const button = document.querySelector('button.orientation');
+// return button;
+// })();

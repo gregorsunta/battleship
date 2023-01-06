@@ -1,6 +1,6 @@
 'use strict';
 
-import { form, game, message, orientationButton } from '/src/components/dom.js';
+import { form, game, message } from '/src/components/dom.js';
 import Player from '/src/components/player.js';
 
 const Gameloop = (function () {
@@ -83,7 +83,6 @@ const Gameloop = (function () {
   };
   const createGameComponents = function (obj) {
     const gameContainer = game.container;
-    // const playerContainer = game.container.querySelector('.container.player');
     const createPlayerData = (obj) => {
       if (obj.computer) {
         return new Player(obj.name, true, obj.size);
@@ -276,7 +275,7 @@ const Gameloop = (function () {
   const markWinner = function (player) {
     player.elements.gridContainer.classList.add('winner');
   };
-  const enableAttackOn = function (playerArg, phaseArg = gameProperties) {
+  const enableAttackOn = function (playerArg) {
     const squareNodes = playerArg.elements.gridContainer.childNodes;
     const processAttack = function (attackResultArg, squareNode) {
       if (attackResultArg === null) {
@@ -318,16 +317,18 @@ const Gameloop = (function () {
   const hidePlacedShips = function (playerComponents) {
     const shipSquares =
       playerComponents.elements.gridContainer.querySelectorAll('.placed');
-    for (let square in shipSquares) {
+    for (let square of shipSquares) {
       square.classList.remove('placed');
     }
   };
   const showPlacedShips = function (playerComponents) {
     const squaresData = playerComponents.data.gameboard.squares;
-    const squaresElements = playerComponents.elements.gridContainers.childNodes;
-    for (let square of squaresData) {
-      if (square.occupies) {
-        squaresElements.querySelector(`[data-id="${square}"]`);
+    const squaresElements = playerComponents.elements.gridContainer.childNodes;
+    for (let [key, value] of Object.entries(squaresData)) {
+      if (value.occupies) {
+        squaresElements
+          .querySelector(`[data-id="${key}"]`)
+          .classList.add('placed');
       }
     }
   };
@@ -352,13 +353,17 @@ const Gameloop = (function () {
     return playerComponents?.data.gameboard.isOneShipPlaced();
   };
   const processPhase = function (gamePropertiesArg) {
-    const gameData = gamePropertiesArg;
+    const gameProperties = gamePropertiesArg;
     const gameElements = game;
-    if (gameData.phase === 0) {
+    if (gameProperties.phase === 0) {
+      gameProperties.activeComponents?.elements.gridContainer.remove();
+      gameProperties.inactiveComponents?.elements.gridContainer.remove();
+      gameProperties.activeComponents?.elements.shipContainer.remove();
+      gameProperties.inactiveComponents?.elements.shipContainer.remove();
+      hideElement(game.container);
       showElement(form.container);
       processForm();
-    } else if (gameData.phase === 1) {
-      console.log(formData);
+    } else if (gameProperties.phase === 1) {
       gameProperties.activeComponents = createGameComponents(
         formData.leftPlayer,
       );
@@ -373,68 +378,61 @@ const Gameloop = (function () {
         gameProperties.inactiveComponents.elements.gridContainer,
         gameProperties.inactiveComponents.elements.shipContainer,
       );
-      showElement(gamePropertiesArg.activeComponents.elements.gridContainer);
-      showElement(gamePropertiesArg.inactiveComponents.elements.gridContainer);
-    } else if (gameData.phase === 2) {
-      enableShipPlacement(gameData.activeComponents);
-      gameData.phase = phases.shipPlacement;
-      processPhase(gameData);
-    } else if (gameData.phase === 3) {
+      showElement(gameProperties.activeComponents.elements.shipContainer);
+      showElement(gameProperties.inactiveComponents.elements.shipContainer);
+      gameProperties.phase = phases.starting;
+      processPhase(gameProperties);
+    } else if (gameProperties.phase === 2) {
+      changeOrientation(game.orientationButton, gameProperties);
+      showElement(game.orientationButton);
+      enableShipPlacement(gameProperties.activeComponents);
+      gameProperties.phase = phases.shipPlacement;
+      processPhase(gameProperties);
+    } else if (gameProperties.phase === 3) {
       if (
-        isShipPlaced(gameData.activeComponents) &&
-        isShipPlaced(gameData.inactiveComponents)
+        isShipPlaced(gameProperties.activeComponents) &&
+        isShipPlaced(gameProperties.inactiveComponents)
       ) {
-        disableShipPlacement(gameData.activeComponents);
-        gameData.phase = phases.playing;
-        processPhase(gameData);
+        disableShipPlacement(gameProperties.activeComponents);
+        hidePlacedShips(gameProperties.activeComponents);
+        gameProperties.phase = phases.playing;
+        processPhase(gameProperties);
       } else if (
-        isShipPlaced(gameData.activeComponents) ||
-        isShipPlaced(gameData.inactiveComponents)
+        isShipPlaced(gameProperties.activeComponents) ||
+        isShipPlaced(gameProperties.inactiveComponents)
       ) {
-        const temp = gameData.activeComponents;
-        gameData.activeComponents = gameData.inactiveComponents;
-        gameData.inactiveComponents = temp;
-        disableShipPlacement(gameData.inactiveComponents);
-        enableShipPlacement(gameData.activeComponents);
+        const temp = gameProperties.activeComponents;
+        gameProperties.activeComponents = gameProperties.inactiveComponents;
+        gameProperties.inactiveComponents = temp;
+        disableShipPlacement(gameProperties.inactiveComponents);
+        hidePlacedShips(gameProperties.inactiveComponents);
+        enableShipPlacement(gameProperties.activeComponents);
       }
-    } else if (gameData.phase === 4) {
-      const temp = gameData.activeComponents;
-      gameData.activeComponents = gameData.inactiveComponents;
-      gameData.inactiveComponents = temp;
-      fadePLayer(gameData.activeComponents);
-      unfadePlayer(gameData.inactiveComponents);
-      enableAttackOn(gameData.inactiveComponents, gameData.activeComponents);
-      changeMessage().turn(gameData.activeComponents);
+    } else if (gameProperties.phase === 4) {
+      const temp = gameProperties.activeComponents;
+      gameProperties.activeComponents = gameProperties.inactiveComponents;
+      gameProperties.inactiveComponents = temp;
+      fadePLayer(gameProperties.activeComponents);
+      unfadePlayer(gameProperties.inactiveComponents);
+      enableAttackOn(
+        gameProperties.inactiveComponents,
+        gameProperties.activeComponents,
+      );
+      changeMessage().turn(gameProperties.activeComponents);
       if (enableAttackOn.status) {
       }
-    } else if (gameData.phase === 5) {
-      unfadePlayer(gameData.activeComponents);
-      markWinner(gameData.activeComponents);
-      changeMessage().win(gameData.activeComponents);
-      gameData.phase = phases.formProcessing;
+    } else if (gameProperties.phase === 5) {
+      unfadePlayer(gameProperties.activeComponents);
+      markWinner(gameProperties.activeComponents);
+      showPlacedShips(gameProperties.activeComponents);
+      showPlacedShips(gameProperties.inactiveComponents);
+      changeMessage().win(gameProperties.activeComponents);
+      gameProperties.phase = phases.formProcessing;
     }
   };
 
   // initialization
 
-  const customLeftObj = {
-    name: 'Gregor',
-    computerOption: false,
-    gameboardSize: '13',
-  };
-  const customRightObj = {
-    name: 'Computer',
-    computerOption: true,
-    gameboardSize: '7',
-  };
-  // const left = game.leftPlayer;
-  // const right = game.rightPlayer;
-  // const playerComponentsLeft = createGameComponents(customLeftObj);
-  // const playerComponentsRight = createGameComponents(customRightObj);
-  // left.gameboard.append(playerComponentsLeft.elements.gridContainer);
-  // left.ships.append(playerComponentsLeft.elements.shipContainer);
-  // right.gameboard.append(playerComponentsRight.elements.gridContainer);
-  // right.ships.append(playerComponentsRight.elements.shipContainer);
   const phases = {
     formProcessing: 0,
     componentCreation: 1,
@@ -449,13 +447,29 @@ const Gameloop = (function () {
     activeComponents: null,
     inactiveComponents: null,
   };
-  processPhase(gameProperties);
-  // processForm();
-  // hideElement(form.container);
+  const skipFormPhase = function (gamePropertiesArg, formDataArg) {
+    // const leftPlayerData = {}
+    formDataArg.leftPlayer = {
+      name: 'John',
+      size: '8',
+      computer: false,
+    };
+    formDataArg.rightPlayer = {
+      name: 'Sarah',
+      size: '12',
+      computer: false,
+    };
+    gamePropertiesArg.phase = phases.componentCreation;
+  };
+  const skipToWinPhase = function (gamePropertiesArg) {
+    gamePropertiesArg.phase = phases.win;
+  };
 
-  // enableShipPlacement(gameProperties.activeComponents);
-  // changeOrientation(orientationButton, gameProperties);
-  game.button.addEventListener('click', (e) => {
+  // skipFormPhase(gameProperties, formData);
+  // processPhase(gameProperties);
+  // skipToWinPhase(gameProperties);
+  processPhase(gameProperties);
+  game.continueButton.addEventListener('click', (e) => {
     processPhase(gameProperties);
   });
   return {

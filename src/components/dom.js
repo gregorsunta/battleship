@@ -51,13 +51,14 @@ const game = (function () {
       container: container.querySelector('.left.player'),
       gameboard: container.querySelector('.left .gameboard.container'),
       ships: container.querySelector('.left .ships.container'),
+      rotationButton: container.querySelector('.left  button.rotation'),
     },
     continueButton: container.querySelector('button.continue'),
-    orientationButton: container.querySelector('button.orientation'),
     rightPlayer: {
       container: container.querySelector('.right.player'),
       gameboard: container.querySelector('.right .gameboard.container'),
       ships: container.querySelector('.right .ships.container'),
+      rotationButton: container.querySelector('.right  button.rotation'),
     },
   };
 })();

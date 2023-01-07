@@ -115,41 +115,39 @@ const Gameloop = (function () {
     const gameElements = gameWindow;
     if (gameProperties.phase === 0) {
       gameProperties.activeComponents?.elements.gridContainer.remove();
-      gameProperties.inactiveComponents?.elements.gridContainer.remove();
       gameProperties.activeComponents?.elements.shipContainer.remove();
+      gameProperties.activeComponents?.elements.buttonContainer.remove();
+      gameProperties.inactiveComponents?.elements.gridContainer.remove();
       gameProperties.inactiveComponents?.elements.shipContainer.remove();
+      gameProperties.inactiveComponents?.elements.buttonContainer.remove();
       hideElement(gameWindow.container);
       showElement(formWindow.container);
       processForm();
     } else if (gameProperties.phase === 1) {
-      if (!gameProperties.activeComponents) {
-        gameProperties.activeComponents = new PlayerComponents(
-          formData.leftPlayer,
-        );
-        gameElements.leftPlayer.gameboard.append(
-          gameProperties.activeComponents.elements.gridContainer,
-        );
-        gameElements.leftPlayer.ships.append(
-          gameProperties.activeComponents.elements.shipContainer,
-        );
-        gameElements.leftPlayer.container.append(
-          gameProperties.activeComponents.elements.buttonContainer,
-        );
-      }
-      if (!gameProperties.inactiveComponents) {
-        gameProperties.inactiveComponents = new PlayerComponents(
-          formData.rightPlayer,
-        );
-        gameElements.rightPlayer.gameboard.append(
-          gameProperties.inactiveComponents.elements.gridContainer,
-        );
-        gameElements.rightPlayer.ships.append(
-          gameProperties.inactiveComponents.elements.shipContainer,
-        );
-        gameElements.rightPlayer.container.append(
-          gameProperties.inactiveComponents.elements.buttonContainer,
-        );
-      }
+      gameProperties.activeComponents = new PlayerComponents(
+        formData.leftPlayer,
+      );
+      gameElements.leftPlayer.gameboard.append(
+        gameProperties.activeComponents.elements.gridContainer,
+      );
+      gameElements.leftPlayer.ships.append(
+        gameProperties.activeComponents.elements.shipContainer,
+      );
+      gameElements.leftPlayer.container.append(
+        gameProperties.activeComponents.elements.buttonContainer,
+      );
+      gameProperties.inactiveComponents = new PlayerComponents(
+        formData.rightPlayer,
+      );
+      gameElements.rightPlayer.gameboard.append(
+        gameProperties.inactiveComponents.elements.gridContainer,
+      );
+      gameElements.rightPlayer.ships.append(
+        gameProperties.inactiveComponents.elements.shipContainer,
+      );
+      gameElements.rightPlayer.container.append(
+        gameProperties.inactiveComponents.elements.buttonContainer,
+      );
       showElement(gameWindow.container);
       gameProperties.phase = phases.starting;
       processPhase(gameProperties);

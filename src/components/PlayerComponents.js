@@ -230,8 +230,6 @@ const PlayerComponents = function (obj) {
       const squaresData = this.data.gameboard.squares;
       const squaresElements = this.elements.gridContainer;
       for (let [key, value] of Object.entries(squaresData)) {
-        console.log(key);
-        console.log(value);
         if (value.occupies) {
           squaresElements
             .querySelector(`[data-id="${key}"]`)

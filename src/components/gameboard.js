@@ -57,7 +57,6 @@ const Gameboard = function () {
         valid: true,
       };
     }
-    return 'banana';
   };
   const placeShipVertically = function (squareStr, ship) {
     isOneShipPlaced = true;
@@ -84,12 +83,12 @@ const Gameboard = function () {
     return selectedSquares;
   };
   return {
-    isOneShipPlaced: () => {
-      return isOneShipPlaced;
-    },
     checkPlacement,
     squares,
     ships,
+    isOneShipPlaced: () => {
+      return isOneShipPlaced;
+    },
     createBoard(size = 10) {
       this.size = size;
       for (let i = 0; i < size; i++) {
@@ -103,6 +102,8 @@ const Gameboard = function () {
       return this.squares;
     },
     placeShip(shipName, squareStr, newOrient = 'v') {
+      console.log(squareStr);
+
       const ship = this.ships[shipName];
       const squareId = squareStr.split(',').map((el) => Number(el));
       const shipOrient = newOrient;
@@ -117,6 +118,29 @@ const Gameboard = function () {
       } else {
         return null;
       }
+    },
+    computerPlaceShip(ship) {
+      const gameboardSize = this.size;
+      const randomNumber = (gameboardSize) => {
+        return Math.floor(Math.random() * gameboardSize);
+      };
+      const randomPlacement = () => {
+        const randomSquare = `${randomNumber(gameboardSize)},${randomNumber(
+          gameboardSize,
+        )}`;
+        const shipOrientArr = ['v', 'h'];
+        const randomOrient =
+          shipOrientArr[Math.floor(Math.random() * shipOrientArr.length)];
+
+        if (checkPlacement(randomSquare, ship, randomOrient).valid) {
+          return [ship.name, randomSquare, randomOrient];
+        } else {
+          return randomPlacement();
+        }
+      };
+      const random = randomPlacement();
+      console.log(random);
+      this.placeShip(...random);
     },
     areShipsSunk() {
       for (let ship of Object.keys(this.ships)) {
@@ -141,6 +165,25 @@ const Gameboard = function () {
         }
         return square.occupies;
       }
+    },
+    receiveComputerAttack(enemy) {
+      const gameboardSize = this.size;
+      const randomNumber = (gameboardSize) => {
+        return Math.floor(Math.random() * gameboardSize);
+      };
+      const randomSquare = () => {
+        const square = `${randomNumber(gameboardSize)},${randomNumber(
+          gameboardSize,
+        )}`;
+        this.gameboard.squares[square];
+        if (this.gameboard.squares[square]?.isHit === false) {
+          return square;
+        } else {
+          return randomSquare();
+        }
+      };
+      const randomSq = randomSquare();
+      return [enemy.gameboard.receiveAttack(randomSq), randomSq];
     },
   };
 };

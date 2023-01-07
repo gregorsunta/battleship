@@ -83,7 +83,6 @@ const Gameloop = (function () {
         showError(player.error, 'A name is required.');
       }
     };
-    // addFormEventListeners();
   };
   const setBaseUnitSize = () => {
     // make ship width the same as square width
@@ -110,16 +109,27 @@ const Gameloop = (function () {
   const showElement = function (container) {
     container.classList.remove('hide');
   };
+  const removePlayerComponents = function (playerComponents) {
+    playerComponents?.elements.gridContainer.remove();
+    playerComponents?.elements.shipContainer.remove();
+    playerComponents?.elements.buttonContainer.remove();
+  };
+  const appendPlayerComponents = function (container, playerComponents) {
+    container.gameboard.append(playerComponents.elements.gridContainer);
+    container.ships.append(playerComponents.elements.shipContainer);
+    container.container.append(playerComponents.elements.buttonContainer);
+  };
+  const switchActivePlayer = function (gamePropertiesArg) {
+    const temp = gameProperties.activeComponents;
+    gameProperties.activeComponents = gameProperties.inactiveComponents;
+    gameProperties.inactiveComponents = temp;
+  };
   const processPhase = function (gamePropertiesArg) {
     const gameProperties = gamePropertiesArg;
     const gameElements = gameWindow;
     if (gameProperties.phase === 0) {
-      gameProperties.activeComponents?.elements.gridContainer.remove();
-      gameProperties.activeComponents?.elements.shipContainer.remove();
-      gameProperties.activeComponents?.elements.buttonContainer.remove();
-      gameProperties.inactiveComponents?.elements.gridContainer.remove();
-      gameProperties.inactiveComponents?.elements.shipContainer.remove();
-      gameProperties.inactiveComponents?.elements.buttonContainer.remove();
+      removePlayerComponents(gameProperties.activeComponents);
+      removePlayerComponents(gameProperties.inactiveComponents);
       hideElement(gameWindow.container);
       showElement(formWindow.container);
       processForm();
@@ -127,26 +137,16 @@ const Gameloop = (function () {
       gameProperties.activeComponents = new PlayerComponents(
         formData.leftPlayer,
       );
-      gameElements.leftPlayer.gameboard.append(
-        gameProperties.activeComponents.elements.gridContainer,
-      );
-      gameElements.leftPlayer.ships.append(
-        gameProperties.activeComponents.elements.shipContainer,
-      );
-      gameElements.leftPlayer.container.append(
-        gameProperties.activeComponents.elements.buttonContainer,
-      );
       gameProperties.inactiveComponents = new PlayerComponents(
         formData.rightPlayer,
       );
-      gameElements.rightPlayer.gameboard.append(
-        gameProperties.inactiveComponents.elements.gridContainer,
+      appendPlayerComponents(
+        gameElements.leftPlayer,
+        gameProperties.activeComponents,
       );
-      gameElements.rightPlayer.ships.append(
-        gameProperties.inactiveComponents.elements.shipContainer,
-      );
-      gameElements.rightPlayer.container.append(
-        gameProperties.inactiveComponents.elements.buttonContainer,
+      appendPlayerComponents(
+        gameElements.rightPlayer,
+        gameProperties.inactiveComponents,
       );
       showElement(gameWindow.container);
       gameProperties.phase = phases.starting;
@@ -155,39 +155,40 @@ const Gameloop = (function () {
       gameProperties.phase = phases.shipPlacement;
       processPhase(gameProperties);
     } else if (gameProperties.phase === 3) {
-      if (
-        gameProperties.activeComponents.isShipPlaced() &&
-        gameProperties.inactiveComponents.isShipPlaced()
-      ) {
+      const leftShipPlaced = gameProperties.activeComponents.isShipPlaced();
+      const rightShipPlaced = gameProperties.inactiveComponents.isShipPlaced();
+
+      if (leftShipPlaced && rightShipPlaced) {
         gameProperties.activeComponents.disableShipPlacement();
-        gameProperties.activeComponents.hidePlacedShips();
+        // gameProperties.activeComponents.hidePlacedShips();
         gameProperties.phase = phases.playing;
         processPhase(gameProperties);
-      } else if (
-        gameProperties.activeComponents.isShipPlaced() ||
-        gameProperties.inactiveComponents.isShipPlaced()
-      ) {
+      } else if (leftShipPlaced || rightShipPlaced) {
         gameProperties.activeComponents.disableShipPlacement();
-        gameProperties.activeComponents.hidePlacedShips();
+        // gameProperties.activeComponents.hidePlacedShips();
 
-        const temp = gameProperties.activeComponents;
-        gameProperties.activeComponents = gameProperties.inactiveComponents;
-        gameProperties.inactiveComponents = temp;
+        switchActivePlayer(gameProperties);
 
         gameProperties.activeComponents.unfadePlayer();
-        gameProperties.activeComponents.enableShipPlacement();
+        if (gameProperties.activeComponents.data.isComputer) {
+          gameProperties.activeComponents.enableComputerPlacement();
+        } else {
+          gameProperties.activeComponents.enableShipPlacement();
+        }
       } else {
         gameProperties.inactiveComponents.fadePlayer();
-        gameProperties.activeComponents.enableShipPlacement();
+        if (gameProperties.activeComponents.data.isComputer) {
+          gameProperties.activeComponents.enableComputerPlacement();
+        } else {
+          gameProperties.activeComponents.enableShipPlacement();
+        }
       }
     } else if (gameProperties.phase === 4) {
       if (gameProperties.inactiveComponents.data.checkForLoss()) {
         gameProperties.phase = phases.win;
         processPhase(gameProperties);
       }
-      const temp = gameProperties.activeComponents;
-      gameProperties.activeComponents = gameProperties.inactiveComponents;
-      gameProperties.inactiveComponents = temp;
+      switchActivePlayer(gameProperties);
       gameProperties.activeComponents.fadePlayer();
       gameProperties.inactiveComponents.unfadePlayer();
       gameProperties.inactiveComponents.enableReceivingAttack();
@@ -206,7 +207,7 @@ const Gameloop = (function () {
     }
   };
 
-  // initialization
+  /* INITIALIZATIN */
 
   const phases = {
     formProcessing: 0,
@@ -246,9 +247,6 @@ const Gameloop = (function () {
   gameWindow.continueButton.addEventListener('click', (e) => {
     processPhase(gameProperties);
   });
-  return {
-    PlayerComponents,
-  };
 })();
 
 export default Gameloop;

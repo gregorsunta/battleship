@@ -1,3 +1,5 @@
+'use strict';
+
 import Player from '/src/components/player.js';
 
 const PlayerComponents = function (obj) {
@@ -175,6 +177,11 @@ const PlayerComponents = function (obj) {
       addShipEventListener(elements.shipContainer.querySelectorAll('.ship'));
       addGridEventListener(elements.gridContainer.querySelectorAll('.square'));
     },
+    enableComputerPlacement() {
+      for (let key of Object.keys(this.data.gameboard.ships)) {
+        data.gameboard.computerPlaceShip(this.data.gameboard.ships[key]);
+      }
+    },
     disableShipPlacement() {
       this.elements.shipContainer.classList.add('hide');
       const squares = this.elements.gridContainer.childNodes;
@@ -202,6 +209,19 @@ const PlayerComponents = function (obj) {
           this.disableReceivingAttack();
         });
       }
+    },
+    enableReceivingComputerAttack() {
+      const squareNodes = this.elements.gridContainer.childNodes;
+      const processAttack = (attackResultArg, squareNode) => {
+        if (attackResultArg === null) {
+          squareNode.classList.add('miss');
+        } else if (attackResultArg) {
+          squareNode.classList.add('hit');
+        }
+      };
+      const attackContent = this.data.gameboard.receiveComputerAttack();
+      processAttack(attackContent, squareNode);
+      this.disableReceivingAttack();
     },
     disableReceivingAttack() {
       const squareNodes = this.elements.gridContainer.childNodes;

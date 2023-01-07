@@ -1,6 +1,7 @@
 import Player from '/src/components/player.js';
 
 const PlayerComponents = function (obj) {
+  let shipOrientation = 'v';
   const createPlayerData = (obj) => {
     if (obj.computer) {
       return new Player(obj.name, true, obj.size);
@@ -9,7 +10,6 @@ const PlayerComponents = function (obj) {
     }
   };
   const createGameElements = function (playerData) {
-    const parent = this;
     const createGrid = () => {
       const grid = document.createElement('div');
       grid.style.gridTemplateRows = `repeat(${playerData.gameboard.size}, 1fr)`;
@@ -43,12 +43,12 @@ const PlayerComponents = function (obj) {
       button.classList.add('rotation');
       button.textContent = 'Vertical';
       button.addEventListener('click', () => {
-        if (parent.shipOrientation === 'v') {
+        if (shipOrientation === 'v') {
           button.textContent = 'Horizontal';
-          parent.shipOrientation = 'h';
-        } else if (parent.shipOrientation === 'h') {
+          shipOrientation = 'h';
+        } else if (shipOrientation === 'h') {
           button.textContent = 'Vertical';
-          parent.shipOrientation = 'v';
+          shipOrientation = 'v';
         }
       });
       return button;
@@ -62,7 +62,6 @@ const PlayerComponents = function (obj) {
   const data = createPlayerData(obj);
   return {
     data: data,
-    shipOrientation: 'v',
     elements: createGameElements(data),
     markWinner() {
       this.elements.gridContainer.classList.add('winner');
@@ -96,7 +95,7 @@ const PlayerComponents = function (obj) {
             const status = data.gameboard.checkPlacement(
               squareStr,
               ship,
-              this.shipOrientation,
+              shipOrientation,
             );
             for (let squareStr of status.elements) {
               const squareEl = elements.gridContainer.querySelector(
@@ -108,7 +107,6 @@ const PlayerComponents = function (obj) {
               } else {
                 squareEl.classList.add('invalid-place');
               }
-              // square.classList.add('hover');
             }
           });
           square.addEventListener('dragleave', (e) => {
@@ -120,7 +118,7 @@ const PlayerComponents = function (obj) {
             const selectedSquares = data.gameboard.checkPlacement(
               squareStr,
               ship,
-              this.shipOrientation,
+              shipOrientation,
             ).elements;
             for (let squareStr of selectedSquares) {
               const squareEl = elements.gridContainer.querySelector(
@@ -142,7 +140,7 @@ const PlayerComponents = function (obj) {
             const status = data.gameboard.checkPlacement(
               squareStr,
               ship,
-              this.shipOrientation,
+              shipOrientation,
             );
             if (status.valid) {
               for (let squareStr of status.elements) {
@@ -154,7 +152,7 @@ const PlayerComponents = function (obj) {
                 data.gameboard.placeShip(
                   e.dataTransfer.mozSourceNode.dataset.type,
                   squareStr,
-                  this.shipOrientation,
+                  shipOrientation,
                 );
                 e.dataTransfer.mozSourceNode.setAttribute('draggable', false);
                 e.dataTransfer.mozSourceNode.classList.add('used');
@@ -193,11 +191,6 @@ const PlayerComponents = function (obj) {
           squareNode.classList.add('miss');
         } else if (attackResultArg) {
           squareNode.classList.add('hit');
-          if (this.data.checkForLoss()) {
-            this.disableReceivingAttack();
-            gameProperties.phase = phases.win;
-            processPhase(gameProperties);
-          }
         }
       };
       for (let squareNode of squareNodes) {

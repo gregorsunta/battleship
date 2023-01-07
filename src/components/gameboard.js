@@ -138,7 +138,6 @@ const Gameboard = function () {
         square.isHit = true;
         if (square.occupies) {
           square.occupies.hit();
-          console.log(square.occupies);
         }
         return square.occupies;
       }

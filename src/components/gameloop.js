@@ -147,7 +147,7 @@ const Gameloop = (function () {
           gameProperties.inactiveComponents.elements.shipContainer,
         );
         gameElements.rightPlayer.container.append(
-          gameProperties.inactiveComponents.createRotationButton(),
+          gameProperties.inactiveComponents.elements.buttonContainer,
         );
       }
       showElement(gameWindow.container);
@@ -183,6 +183,10 @@ const Gameloop = (function () {
         gameProperties.activeComponents.enableShipPlacement();
       }
     } else if (gameProperties.phase === 4) {
+      if (gameProperties.inactiveComponents.data.checkForLoss()) {
+        gameProperties.phase = phases.win;
+        processPhase(gameProperties);
+      }
       const temp = gameProperties.activeComponents;
       gameProperties.activeComponents = gameProperties.inactiveComponents;
       gameProperties.inactiveComponents = temp;
@@ -190,6 +194,8 @@ const Gameloop = (function () {
       gameProperties.inactiveComponents.unfadePlayer();
       gameProperties.inactiveComponents.enableReceivingAttack();
       changeMessage().turn(gameProperties.activeComponents);
+      console.log(gameProperties.inactiveComponents.data.checkForLoss());
+
       // if (enableReceivingAttack.status) {
       // }
     } else if (gameProperties.phase === 5) {

@@ -108,10 +108,13 @@ form {
   justify-content: center;
   align-items: center;
   gap: $common-size;
-  > .player {
+
+  .components {
     display: flex;
   }
+
   .gameboard.container {
+    // display: flex;
     width: 30vw;
     aspect-ratio: 1/1;
     > div {

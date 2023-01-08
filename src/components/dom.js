@@ -47,18 +47,20 @@ const game = (function () {
   const container = document.querySelector('.game.container');
   return {
     container,
+    leftName: container.querySelector('.left .name'),
     leftPlayer: {
       container: container.querySelector('.left.player'),
       gameboard: container.querySelector('.left .gameboard.container'),
       ships: container.querySelector('.left .ships.container'),
-      rotationButton: container.querySelector('.left  button.rotation'),
+      rotationButton: container.querySelector('.left .rotation'),
     },
     continueButton: container.querySelector('button.continue'),
+    rightName: container.querySelector('.right .name'),
     rightPlayer: {
       container: container.querySelector('.right.player'),
       gameboard: container.querySelector('.right .gameboard.container'),
       ships: container.querySelector('.right .ships.container'),
-      rotationButton: container.querySelector('.right  button.rotation'),
+      rotationButton: container.querySelector('.right .rotation'),
     },
   };
 })();

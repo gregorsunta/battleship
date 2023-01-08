@@ -89,6 +89,10 @@ const PlayerComponents = function (obj) {
       const addGridEventListener = (squareList) => {
         const grid = squareList;
         for (let square of Object.values(grid)) {
+          if (square.isListening) {
+            return;
+          }
+          square.isListening = true;
           square.addEventListener('dragover', (e) => {
             e.preventDefault();
             const ship =

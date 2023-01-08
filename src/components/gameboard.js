@@ -175,7 +175,6 @@ const Gameboard = function () {
               [0, -1],
             ];
             const createMove = function (squareString, direction) {
-              console.log(squareString);
               const squareId = squareString.split(',');
               return [
                 Number(squareId[0]) + Number(direction[0]),
@@ -195,9 +194,6 @@ const Gameboard = function () {
                   newPossibleTarget,
                   direction,
                 ).join(',');
-                console.log(newPossibleTarget);
-                // console.log(`${} ${}`);
-
                 while (
                   squares[newPossibleTarget] &&
                   squares[newPossibleTarget]?.occupies

@@ -183,6 +183,7 @@ const PlayerComponents = function (obj) {
       }
     },
     disableShipPlacement() {
+      this.elements.buttonContainer.classList.add('hide');
       this.elements.shipContainer.classList.add('hide');
       const squares = this.elements.gridContainer.childNodes;
       for (let square of squares) {
@@ -223,10 +224,7 @@ const PlayerComponents = function (obj) {
       const squareNode = this.elements.gridContainer.querySelector(
         `[data-id="${square}"]`,
       );
-      console.log(squareNode);
-
       processAttack(result, squareNode);
-      // this.disableReceivingAttack();
     },
     disableReceivingAttack() {
       const squareNodes = this.elements.gridContainer.childNodes;

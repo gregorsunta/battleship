@@ -160,12 +160,12 @@ const Gameloop = (function () {
 
       if (leftShipPlaced && rightShipPlaced) {
         gameProperties.activeComponents.disableShipPlacement();
-        // gameProperties.activeComponents.hidePlacedShips();
+        gameProperties.activeComponents.hidePlacedShips();
         gameProperties.phase = phases.playing;
         processPhase(gameProperties);
       } else if (leftShipPlaced || rightShipPlaced) {
         gameProperties.activeComponents.disableShipPlacement();
-        // gameProperties.activeComponents.hidePlacedShips();
+        gameProperties.activeComponents.hidePlacedShips();
 
         switchActivePlayer(gameProperties);
 

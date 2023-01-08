@@ -219,9 +219,14 @@ const PlayerComponents = function (obj) {
           squareNode.classList.add('hit');
         }
       };
-      const attackContent = this.data.gameboard.receiveComputerAttack();
-      processAttack(attackContent, squareNode);
-      this.disableReceivingAttack();
+      const [result, square] = this.data.gameboard.receiveComputerAttack();
+      const squareNode = this.elements.gridContainer.querySelector(
+        `[data-id="${square}"]`,
+      );
+      console.log(squareNode);
+
+      processAttack(result, squareNode);
+      // this.disableReceivingAttack();
     },
     disableReceivingAttack() {
       const squareNodes = this.elements.gridContainer.childNodes;

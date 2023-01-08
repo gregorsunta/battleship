@@ -191,12 +191,12 @@ const Gameloop = (function () {
       switchActivePlayer(gameProperties);
       gameProperties.activeComponents.fadePlayer();
       gameProperties.inactiveComponents.unfadePlayer();
-      gameProperties.inactiveComponents.enableReceivingAttack();
+      if (gameProperties.activeComponents.data.isComputer) {
+        gameProperties.inactiveComponents.enableReceivingComputerAttack();
+      } else {
+        gameProperties.inactiveComponents.enableReceivingAttack();
+      }
       changeMessage().turn(gameProperties.activeComponents);
-      console.log(gameProperties.inactiveComponents.data.checkForLoss());
-
-      // if (enableReceivingAttack.status) {
-      // }
     } else if (gameProperties.phase === 5) {
       gameProperties.activeComponents.unfadePlayer();
       gameProperties.activeComponents.markWinner();

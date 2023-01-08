@@ -166,7 +166,7 @@ const Gameboard = function () {
         return square.occupies;
       }
     },
-    receiveComputerAttack(enemy) {
+    receiveComputerAttack() {
       const gameboardSize = this.size;
       const randomNumber = (gameboardSize) => {
         return Math.floor(Math.random() * gameboardSize);
@@ -175,15 +175,15 @@ const Gameboard = function () {
         const square = `${randomNumber(gameboardSize)},${randomNumber(
           gameboardSize,
         )}`;
-        this.gameboard.squares[square];
-        if (this.gameboard.squares[square]?.isHit === false) {
+        this.squares[square];
+        if (this.squares[square]?.isHit === false) {
           return square;
         } else {
           return randomSquare();
         }
       };
       const randomSq = randomSquare();
-      return [enemy.gameboard.receiveAttack(randomSq), randomSq];
+      return [this.receiveAttack(randomSq), randomSq];
     },
   };
 };

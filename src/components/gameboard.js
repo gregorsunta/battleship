@@ -165,18 +165,61 @@ const Gameboard = function () {
     },
     receiveComputerAttack() {
       const checkIfPossibleHit = () => {
-        for (let [key, value] of Object.entries(squares)) {
-          if (value.isHit && value.occupies && !value.occupies.isSunk()) {
-            const square = key.split(',');
-            const neighbourArr = [
-              [Number(square[0]) + 1, Number(square[1])],
-              [Number(square[0]) - 1, Number(square[1])],
-              [Number(square[0]), Number(square[1]) + 1],
-              [Number(square[0]), Number(square[1]) - 1],
+        for (let [squareStr, value] of Object.entries(squares)) {
+          if (value.isHit && value.occupies) {
+            const square = squareStr.split(',');
+            const directions = [
+              [0, 1],
+              [1, 0],
+              [-1, 0],
+              [0, -1],
             ];
-            for (let neighbour of neighbourArr) {
-              if (squares[neighbour.join(',')]?.isHit === false) {
-                return neighbour;
+            const createMove = function (squareString, direction) {
+              console.log(squareString);
+              const squareId = squareString.split(',');
+              return [
+                Number(squareId[0]) + Number(direction[0]),
+                Number(squareId[1]) + Number(direction[1]),
+              ];
+            };
+            for (let direction of directions) {
+              let newPossibleTarget = createMove(
+                square.join(','),
+                direction,
+              ).join(',');
+              if (
+                squares[newPossibleTarget]?.isHit === true &&
+                squares[newPossibleTarget]?.occupies
+              ) {
+                newPossibleTarget = createMove(
+                  newPossibleTarget,
+                  direction,
+                ).join(',');
+                console.log(newPossibleTarget);
+                // console.log(`${} ${}`);
+
+                while (
+                  squares[newPossibleTarget] &&
+                  squares[newPossibleTarget]?.occupies
+                ) {
+                  if (squares[newPossibleTarget]?.isHit === false) {
+                    return newPossibleTarget;
+                  }
+                  newPossibleTarget = createMove(
+                    newPossibleTarget,
+                    direction,
+                  ).join(',');
+                }
+              }
+            }
+            for (let direction of directions) {
+              let newPossibleTarget = createMove(
+                square.join(','),
+                direction,
+              ).join(',');
+              // console.log(newPossibleTarget);
+              if (squares[newPossibleTarget]?.isHit === false) {
+                return newPossibleTarget;
               }
             }
           }

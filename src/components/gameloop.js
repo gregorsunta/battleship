@@ -43,7 +43,6 @@ const Gameloop = (function () {
       e.preventDefault();
       const leftPlayerValid = leftPlayer.name.input.validity.valid;
       const rightPlayerValid = rightPlayer.name.input.validity.valid;
-      console.log('here');
 
       if (leftPlayerValid && rightPlayerValid) {
         hideElement(formWindow.container);
@@ -56,11 +55,9 @@ const Gameloop = (function () {
         togglePlayerInput(rightPlayer);
       } else {
         if (!leftPlayerValid) {
-          console.log('here');
           displayError(leftPlayer);
         }
         if (!rightPlayerValid) {
-          console.log('here');
           displayError(rightPlayer);
         }
       }

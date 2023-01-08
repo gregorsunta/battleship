@@ -43,6 +43,7 @@ const Gameloop = (function () {
       e.preventDefault();
       const leftPlayerValid = leftPlayer.name.input.validity.valid;
       const rightPlayerValid = rightPlayer.name.input.validity.valid;
+      console.log('here');
 
       if (leftPlayerValid && rightPlayerValid) {
         hideElement(formWindow.container);
@@ -54,10 +55,12 @@ const Gameloop = (function () {
         togglePlayerInput(leftPlayer);
         togglePlayerInput(rightPlayer);
       } else {
-        if (leftPlayerValid) {
+        if (!leftPlayerValid) {
+          console.log('here');
           displayError(leftPlayer);
         }
-        if (rightPlayerValid) {
+        if (!rightPlayerValid) {
+          console.log('here');
           displayError(rightPlayer);
         }
       }
@@ -78,8 +81,8 @@ const Gameloop = (function () {
       };
     };
     const displayError = function (player) {
-      if (player.input.validity.valueMissing) {
-        showError(player.error, 'A name is required.');
+      if (player.name.input.validity.valueMissing) {
+        showError(player.name.error, 'A name is required.');
       }
     };
   };
@@ -125,6 +128,8 @@ const Gameloop = (function () {
       showElement(formWindow.container);
       processForm();
     } else if (gameProperties.phase === 1) {
+      gameWindow.leftPlayer.name.textContent = formData.leftPlayer.name;
+      gameWindow.rightPlayer.name.textContent = formData.rightPlayer.name;
       gameProperties.activeComponents = new PlayerComponents(
         formData.leftPlayer,
       );

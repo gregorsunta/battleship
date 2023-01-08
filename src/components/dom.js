@@ -12,7 +12,7 @@ const form = (function () {
       name: {
         container: container.querySelector('.left > .name'),
         input: container.querySelector('.left > .name > input'),
-        error: container.querySelector('.left > .error'),
+        error: container.querySelector('.left .error'),
       },
       computer: {
         container: container.querySelector('.left > .computer'),
@@ -29,7 +29,7 @@ const form = (function () {
       name: {
         container: container.querySelector('.right > .name'),
         input: container.querySelector('.right > .name > input'),
-        message: container.querySelector('.right > .message'),
+        error: container.querySelector('.right .error'),
       },
       computer: {
         container: container.querySelector('.right > .computer'),
@@ -47,16 +47,16 @@ const game = (function () {
   const container = document.querySelector('.game.container');
   return {
     container,
-    leftName: container.querySelector('.left .name'),
     leftPlayer: {
+      name: container.querySelector('.left .name'),
       container: container.querySelector('.left.player'),
       gameboard: container.querySelector('.left .gameboard.container'),
       ships: container.querySelector('.left .ships.container'),
       rotationButton: container.querySelector('.left .rotation'),
     },
     continueButton: container.querySelector('button.continue'),
-    rightName: container.querySelector('.right .name'),
     rightPlayer: {
+      name: container.querySelector('.right .name'),
       container: container.querySelector('.right.player'),
       gameboard: container.querySelector('.right .gameboard.container'),
       ships: container.querySelector('.right .ships.container'),

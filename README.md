@@ -48,4 +48,8 @@ generates its own html elements and data from `player.js`. This is the main fact
 
 I decided to make my DOM referencing completely seperate and hierarchy based. This lead to some improvements like simplicity when accesing this properties and simpler names. But it also caused a lot of problems when adding a new layer to the hierarchy.
 
-I also decided to attach html player element and player data creating functions to a combined factory function `PlayerComponents`. This way I could also add dom manipulating methods and easily manipulate player elements when creating a `const playerOne = new PlayerComponents(someData)` like this: `playerOne.elements.hidePlacedShips()`. This hovewer, presented its own challenges as the code became more complex in the `PlayerComponents.js`
+I also decided to attach html player element and player data creating functions to a combined factory function `PlayerComponents`. This way I could also add dom manipulating methods and easily manipulate player elements when creating a `const playerOne = new PlayerComponents(someData)` like this: `playerOne.elements.hidePlacedShips()`. This, hovewer, presented its own challenges as the code became more complex in the `PlayerComponents.js` file.
+
+### Test driven development
+
+I was using TDD for the first couple of files, and It was apparent why it was a valuable skill. It saved tons of time and held code complexity at bay. But somewhere along the way when programming DOM manipulation bits I stopped using it and it cost me loads of time. 

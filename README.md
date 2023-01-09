@@ -21,7 +21,7 @@ For this project I focused on using factory functions and the module pattern ins
 
 ## Components
 
-### `DOM.js`
+#### `DOM.js`
 HTML                       |  DOM.JS
 :-------------------------:|:-------------------------:
  ![image](https://user-images.githubusercontent.com/102059719/210060868-1ea3e91b-cd7c-4167-b13f-c0d1dcc12cb9.png)|![image](https://user-images.githubusercontent.com/102059719/210060724-1552bf60-e1fb-470b-937d-b6f56d8e8be2.png)

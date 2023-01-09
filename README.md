@@ -28,18 +28,18 @@ HTML                       |  DOM.JS
 
 This file is completely dedicated to tying DOM elements as shown in the example above.
 
-### `ship.js`
+#### `ship.js`
 contains two factory functions:
 - `Ship` creates a ship object with specified length
 - `Ships` creates a ship collection object
 
-### `gameboard.js`
-creates a gameboard object with its own ship collection.
+#### `gameboard.js`
+creates a gameboard object with its own ship collection. It also returns methods for ship placing, receiving attacks, checking ship status and more..
 
-### `player.js`
-creates a player object from `gameboard`.js`. It also returns multiple functions to handle/update player data.
+#### `player.js`
+creates a player object from `gameboard`.js`. It also returns multiple functions and properties to handle/update player data and gameboards.
 
-## `PlayerComponents.js`
+#### `PlayerComponents.js`
 generates its own html elements and data from `player.js`. This is the main factory function which is used to create whole player objects.
 
 ## Challenges

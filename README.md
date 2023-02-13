@@ -61,6 +61,6 @@ I was using TDD for the first couple of files, and It was apparent why it was a 
 
 ## How would I improve my code / Problems
 
-I made a very big mistake of not using event propagation for faster code - using A LOT less event listeners. When adding event listeners to the grid for placing ships, attacking etc., I made the crucial mistake of adding event listeners on the individual squares. I should of add the event listener to the parent of the squares (the grid) and let the event delegation do its magic. This way I would remove n x n x 2 - 2 of event listeners where n is the number of rows and columns.
-Also I would add some information on how actually to play the game, as some individuals testing the game were a bit confusing when starting to play. 
-The bot is also not optimized. I would need to look up on how improve it.
+-I made a very big mistake of not using event propagation for faster code - using A LOT less event listeners. When adding event listeners to the grid for placing ships, attacking etc., I made the crucial mistake of adding event listeners on the individual squares. I should of add the event listener to the parent of the squares (the grid) and let the event delegation do its magic. This way I would remove n x n x 2 - 2 of event listeners where n is the number of rows and columns.
+-Also I would add some information on how actually to play the game, as some individuals testing the game were a bit confusing when starting to play. 
+-The bot is also not optimized. I would need to look up on how improve it.

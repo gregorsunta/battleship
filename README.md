@@ -1,5 +1,7 @@
 # Battleship
 
+You can see the live demo (here)[https://gregorsunta.github.io/battleship/]
+
 ## About
 
 The game is based on the popular Battleship game but with a few twists like:

@@ -1,6 +1,6 @@
 # Battleship
 
-You can see the live demo (here)[https://gregorsunta.github.io/battleship/]
+You can see the live demo [here](https://gregorsunta.github.io/battleship/)
 
 ## About
 
